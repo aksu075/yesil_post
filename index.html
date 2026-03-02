@@ -421,6 +421,8 @@ max-width: 600px;
 }
 </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 </head>
 <body>
 
@@ -623,21 +625,88 @@ function updatePost() {
 }
 
 async function downloadPost() {
-  const el = document.getElementById('postContainer');
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    document.head.appendChild(s);
-    await new Promise(r => s.onload = r);
+  const btn = document.querySelector('.btn-download');
+  const origText = btn.innerHTML;
+  try {
+    btn.innerHTML = '⏳ Oluşturuluyor...';
+    btn.disabled = true;
+
+    if (typeof html2canvas === 'undefined') {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('html2canvas yüklenemedi'));
+        document.head.appendChild(s);
+      });
+    }
+
+    // Wait for all images to be fully loaded
+    const images = document.getElementById('postContainer').querySelectorAll('img');
+    await Promise.all(Array.from(images).map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(r => { img.onload = r; img.onerror = r; });
+    }));
+
+    const el = document.getElementById('postContainer');
+    const canvas = await html2canvas(el, {
+      width: 1080,
+      height: 1080,
+      scale: 1,
+      useCORS: false,
+      allowTaint: false,
+      backgroundColor: '#0f1f14',
+      logging: true,
+      imageTimeout: 0,
+      onclone: function(clonedDoc) {
+        // Ensure cloned images use same base64 src
+        const clonedImgs = clonedDoc.querySelectorAll('img');
+        const origImgs = document.querySelectorAll('#postContainer img');
+        clonedImgs.forEach((img, i) => {
+          if (origImgs[i]) {
+            img.src = origImgs[i].src;
+          }
+        });
+      }
+    });
+
+    // Use toBlob as fallback approach
+    const blob = await new Promise((resolve, reject) => {
+      try {
+        canvas.toBlob(function(b) {
+          if (b) resolve(b);
+          else reject(new Error('Blob oluşturulamadı'));
+        }, 'image/png');
+      } catch(e) {
+        reject(e);
+      }
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'yesil-guvenlik-egitim-ilani.png';
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+  } catch (err) {
+    console.error('PNG indirme hatası:', err);
+    alert('PNG indirme hatası: ' + err.message + '\n\nTarayıcı konsolunu kontrol edin (F12).');
+  } finally {
+    btn.innerHTML = origText;
+    btn.disabled = false;
   }
-  const canvas = await html2canvas(el, {
-    width: 1080, height: 1080, scale: 1,
-    useCORS: true, backgroundColor: '#0f1f14'
-  });
-  const link = document.createElement('a');
-  link.download = 'yesil-guvenlik-egitim-ilani.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+}
+
+  } catch (err) {
+    console.error('PNG indirme hatası:', err);
+    alert('PNG oluşturulamadı: ' + err.message);
+  } finally {
+    btn.innerHTML = origText;
+    btn.disabled = false;
+  }
 }
 </script>
 
