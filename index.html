@@ -1,1376 +1,645 @@
 <!DOCTYPE html>
+
 <html lang="tr">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Yeşil Güvenlik - Yönetim Paneli</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <style>
-    * {
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yeşil Özel Güvenlik - Instagram Post Şablonu</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-      -webkit-tap-highlight-color: transparent;
-    }
+body {
+font-family: ‘Inter’, sans-serif;
+background: #0e0e12;
+display: flex;
+flex-direction: column;
+align-items: center;
+min-height: 100vh;
+padding: 20px;
+color: #fff;
+}
 
-    .fade-in {
-      animation: fadeIn 0.4s ease-out;
-    }
+h1 {
+font-family: ‘Montserrat’, sans-serif;
+font-size: 22px;
+margin-bottom: 6px;
+color: #34d399;
+}
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
+.controls {
+background: #1a1a24;
+border-radius: 16px;
+padding: 24px;
+margin-bottom: 24px;
+width: 100%;
+max-width: 620px;
+border: 1px solid rgba(52, 211, 153, 0.15);
+}
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+.controls h2 {
+font-family: ‘Montserrat’, sans-serif;
+font-size: 15px;
+color: #34d399;
+margin-bottom: 16px;
+}
 
-    .slide-in {
-      animation: slideIn 0.3s ease-out;
-    }
+.form-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+}
 
-    @keyframes slideIn {
-      from {
-        transform: translateX(-100%);
-      }
+.form-group {
+display: flex;
+flex-direction: column;
+}
 
-      to {
-        transform: translateX(0);
-      }
-    }
+.form-group label {
+font-size: 11px;
+font-weight: 600;
+color: #8892b0;
+margin-bottom: 4px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
 
-    .glass {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
+.form-group input, .form-group select {
+background: #12121a;
+border: 1px solid rgba(52, 211, 153, 0.2);
+border-radius: 8px;
+padding: 10px 12px;
+color: #fff;
+font-size: 14px;
+font-family: ‘Inter’, sans-serif;
+outline: none;
+transition: border-color 0.2s;
+}
 
-    .card-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+.form-group input:focus, .form-group select:focus {
+border-color: #34d399;
+}
 
-    .card-hover:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
+.form-group select option { background: #12121a; }
 
-    .gradient-green {
-      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    }
+.btn-download {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+background: linear-gradient(135deg, #34d399, #059669);
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 14px 28px;
+font-size: 15px;
+font-weight: 700;
+font-family: ‘Montserrat’, sans-serif;
+cursor: pointer;
+margin-top: 16px;
+transition: transform 0.2s, box-shadow 0.2s;
+width: 100%;
+}
 
-    .gradient-blue {
-      background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
-    }
+.btn-download:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 24px rgba(52, 211, 153, 0.35);
+}
 
-    .gradient-red {
-      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    }
+/* ===== POST CANVAS 1080x1080 ===== */
+.post-wrapper {
+position: relative;
+width: 1080px;
+height: 1080px;
+transform-origin: top center;
+}
 
-    .gradient-amber {
-      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-    }
+.post {
+width: 1080px;
+height: 1080px;
+position: relative;
+overflow: hidden;
+background: #0f1f14;
+font-family: ‘Montserrat’, sans-serif;
+}
 
-    .gradient-purple {
-      background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
-    }
+/* Background — lighter, more open greens */
+.post::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse 80% 60% at 10% 5%, rgba(52, 211, 153, 0.15) 0%, transparent 65%),
+radial-gradient(ellipse 70% 50% at 90% 95%, rgba(16, 185, 129, 0.10) 0%, transparent 55%),
+radial-gradient(ellipse 60% 60% at 50% 50%, rgba(52, 211, 153, 0.04) 0%, transparent 80%);
+z-index: 0;
+}
 
-    input,
-    select,
-    textarea {
-      font-size: 16px !important;
-    }
+/* Subtle grid */
+.post::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background-image:
+linear-gradient(rgba(52, 211, 153, 0.025) 1px, transparent 1px),
+linear-gradient(90deg, rgba(52, 211, 153, 0.025) 1px, transparent 1px);
+background-size: 40px 40px;
+z-index: 0;
+}
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
+.post > * { position: relative; z-index: 1; }
 
-    .badge-success {
-      background: #d1fae5;
-      color: #065f46;
-    }
+/* Top accent */
+.accent-top {
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 5px;
+background: linear-gradient(90deg, #34d399, #059669, #34d399);
+z-index: 2;
+}
 
-    .badge-warning {
-      background: #fef3c7;
-      color: #92400e;
-    }
+/* HEADER */
+.header {
+position: absolute;
+top: 32px; left: 52px; right: 52px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+z-index: 2;
+}
 
-    .badge-danger {
-      background: #fee2e2;
-      color: #991b1b;
-    }
+.header-left {
+display: flex;
+align-items: center;
+gap: 14px;
+}
 
-    .badge-info {
-      background: #dbeafe;
-      color: #1e40af;
-    }
+.logo-box {
+width: 54px; height: 54px;
+border-radius: 14px;
+background: #fff;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
 
-    .stat-card {
-      position: relative;
-      overflow: hidden;
-    }
+.header-brand {
+display: flex;
+flex-direction: column;
+gap: 2px;
+}
 
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-    }
+.header-brand .name {
+font-size: 19px;
+font-weight: 800;
+color: #fff;
+letter-spacing: 0.3px;
+}
 
-    /* Date input - tarayıcı varsayılan stilini gizle */
-    input[type="date"] {
-      position: relative;
-      background: white;
-    }
+.header-brand .sub {
+font-size: 11.5px;
+font-weight: 500;
+color: rgba(255,255,255,0.45);
+letter-spacing: 0.8px;
+}
 
-    input[type="date"]::-webkit-date-and-time-value {
-      text-align: left;
-    }
+.badge-kontenjan {
+background: linear-gradient(135deg, #f59e0b, #d97706);
+color: #fff;
+font-size: 10.5px;
+font-weight: 800;
+padding: 7px 16px;
+border-radius: 24px;
+text-transform: uppercase;
+letter-spacing: 1.2px;
+box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
 
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      opacity: 0.6;
-      width: 20px;
-      height: 20px;
-    }
+/* TITLE */
+.title-area {
+position: absolute;
+top: 125px; left: 52px; right: 52px;
+z-index: 2;
+}
 
-    /* Date input wrapper için */
-    .date-input-wrapper {
-      position: relative;
-    }
+.title-label {
+font-size: 13px;
+font-weight: 700;
+color: #34d399;
+text-transform: uppercase;
+letter-spacing: 4px;
+margin-bottom: 10px;
+}
 
-    .date-input-wrapper .date-icon {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      opacity: 0.5;
-      color: #6b7280;
-    }
+.title-main {
+font-size: 56px;
+font-weight: 900;
+color: #fff;
+line-height: 1.05;
+margin-bottom: 10px;
+}
 
-    .custom-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-    }
+.title-main .green { color: #34d399; }
 
-    .custom-table th {
-      background-color: #f9fafb;
-      color: #374151;
-      font-weight: 600;
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 2px solid #e5e7eb;
-      white-space: nowrap;
-    }
+.title-sub {
+font-size: 16px;
+font-weight: 500;
+color: rgba(255,255,255,0.5);
+letter-spacing: 0.5px;
+}
 
-    .custom-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #f3f4f6;
-      color: #4b5563;
-    }
+/* DIVIDERS */
+.divider {
+position: absolute;
+left: 52px; right: 52px;
+height: 1px;
+z-index: 2;
+}
+.divider-1 { top: 328px; background: linear-gradient(90deg, rgba(52,211,153,0.4), rgba(52,211,153,0.05)); }
+.divider-2 { bottom: 150px; background: rgba(52,211,153,0.12); }
 
-    .custom-table tr:hover td {
-      background-color: #f9fafb;
-    }
+/* DATE CARDS */
+.dates {
+position: absolute;
+top: 356px; left: 52px; right: 52px;
+display: flex;
+gap: 18px;
+z-index: 2;
+}
 
-    .custom-table tr:last-child td {
-      border-bottom: none;
-    }
+.date-card {
+flex: 1;
+background: rgba(52, 211, 153, 0.06);
+border: 1px solid rgba(52, 211, 153, 0.15);
+border-radius: 16px;
+padding: 22px 20px;
+position: relative;
+overflow: hidden;
+}
 
-    /* Number input spinner (yukarı/aşağı ok) gizle */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+.date-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(90deg, #34d399, #059669);
+}
 
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
-  </style>
-  <script>
-    const APP_VERSION = 'v28';
-    const storedVersion = localStorage.getItem('yesil_app_version');
-    if (storedVersion !== APP_VERSION) {
-      if ('caches' in window) { caches.keys().then(names => { names.forEach(name => caches.delete(name)); }); }
-      // Eski kullanıcı verilerini temizle
-      localStorage.removeItem('yesil_users');
-      localStorage.removeItem('yesil_users_v2');
-      localStorage.removeItem('yesil_users_v3');
-      localStorage.removeItem('yesil_users_v4');
-      sessionStorage.removeItem('yesil_user');
-      localStorage.setItem('yesil_app_version', APP_VERSION);
-    }
-  </script>
+.date-card .dc-icon { width: 32px; height: 32px; margin-bottom: 10px; }
+
+.date-card .dc-label {
+font-size: 10px;
+font-weight: 700;
+color: #34d399;
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-bottom: 8px;
+}
+
+.date-card .dc-value {
+font-size: 21px;
+font-weight: 800;
+color: #fff;
+line-height: 1.2;
+}
+
+/* INFO CARDS */
+.info-row {
+position: absolute;
+top: 555px; left: 52px; right: 52px;
+display: flex;
+gap: 18px;
+z-index: 2;
+}
+
+.info-card {
+flex: 1;
+background: rgba(52, 211, 153, 0.05);
+border: 1px solid rgba(52, 211, 153, 0.12);
+border-radius: 16px;
+padding: 22px;
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.info-card .ic-icon { width: 38px; height: 38px; flex-shrink: 0; }
+.info-card .ic-content { display: flex; flex-direction: column; gap: 3px; }
+
+.info-card .ic-label {
+font-size: 10px;
+font-weight: 700;
+color: rgba(255,255,255,0.35);
+text-transform: uppercase;
+letter-spacing: 1.5px;
+}
+
+.info-card .ic-value {
+font-size: 18px;
+font-weight: 700;
+color: #fff;
+}
+
+/* NOTICE */
+.notice {
+position: absolute;
+top: 710px; left: 52px; right: 52px;
+background: rgba(52, 211, 153, 0.05);
+border: 1px solid rgba(52, 211, 153, 0.12);
+border-radius: 14px;
+padding: 18px 22px;
+display: flex;
+align-items: center;
+gap: 14px;
+z-index: 2;
+}
+
+.notice svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+.notice p {
+font-size: 14.5px;
+font-weight: 500;
+color: rgba(255,255,255,0.6);
+line-height: 1.6;
+}
+
+.notice p strong { color: #34d399; font-weight: 700; }
+
+/* FOOTER */
+.footer {
+position: absolute;
+bottom: 36px; left: 52px; right: 52px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+z-index: 2;
+}
+
+.footer-item {
+display: flex;
+align-items: center;
+gap: 9px;
+}
+
+.footer-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.footer-item span {
+font-size: 13px;
+font-weight: 600;
+color: rgba(255,255,255,0.55);
+line-height: 1.35;
+}
+
+.footer-item span.addr {
+font-size: 11px;
+max-width: 240px;
+}
+
+.accent-bottom {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 4px;
+background: linear-gradient(90deg, #34d399, #059669, #34d399);
+z-index: 2;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+.post-wrapper { transform: scale(0.5); margin-bottom: -540px; }
+}
+@media (max-width: 600px) {
+.post-wrapper { transform: scale(0.33); margin-bottom: -720px; }
+}
+
+.note {
+margin-top: 16px;
+font-size: 13px;
+color: #666;
+text-align: center;
+max-width: 600px;
+}
+</style>
+
 </head>
-
 <body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const TEMEL_DONEMLER = ['119. Dönem', '120. Dönem', '121. Dönem', '122. Dönem', '123. Dönem', '124. Dönem'];
-    const YENILEME_DONEMLER = ['95. Dönem', '96. Dönem', '97. Dönem', '98. Dönem', '99. Dönem', '100. Dönem'];
-    const SINIFLAR = ['1', '2', '3', '4', '5'];
-    const GIDER_KATEGORILERI = ['Mermi', 'Poligon', 'Eğitmen', 'Kira', 'Personel', 'Mutfak', 'Vergi', 'Diğer'];
 
-    const SHEETS_CONFIG = {
-      WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbx54AokpsO6w8c0u_nrx3TpGpr2f_cDsUOEFycLgDiOqn-W3N0E2iDudS6KvdnFq1Al/exec',
-      SHEET_NAMES: { KAYITLAR: 'Kayitlar', GIDERLER: 'Giderler', USERS: 'Users', LOGS: 'Logs', KASA: 'Kasa' }
-    };
+<h1>YG Eğitim İlanı Şablonu</h1>
+<p style="color: #8892b0; margin-bottom: 20px; font-size: 14px;">Bilgileri düzenle, PNG olarak indir</p>
+
+<div class="controls">
+  <h2>İlan Bilgileri</h2>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Eğitim Türü</label>
+      <select id="egitimTuru" onchange="updatePost()">
+        <option value="TEMEL">Temel Eğitim</option>
+        <option value="YENİLEME" selected>Yenileme Eğitimi</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Sertifika Türü</label>
+      <select id="sertifikaTuru" onchange="updatePost()">
+        <option value="Silahlı &amp; Silahsız" selected>Silahlı & Silahsız</option>
+        <option value="Silahlı">Sadece Silahlı</option>
+        <option value="Silahsız">Sadece Silahsız</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Son Başvuru</label>
+      <input type="text" id="sonBasvuru" value="02 Mart 2026" oninput="updatePost()">
+    </div>
+    <div class="form-group">
+      <label>Kurs Başlangıç</label>
+      <input type="text" id="kursBaslangic" value="05 Mart 2026" oninput="updatePost()">
+    </div>
+    <div class="form-group">
+      <label>Sınav Tarihi</label>
+      <input type="text" id="sinavTarihi" value="03 Mayıs 2026" oninput="updatePost()">
+    </div>
+    <div class="form-group">
+      <label>Eğitim Süresi</label>
+      <input type="text" id="egitimSuresi" value="Silahlı: 7 gün / Silahsız: 6 gün" oninput="updatePost()">
+    </div>
+  </div>
+  <button class="btn-download" onclick="downloadPost()">⬇ PNG Olarak İndir (1080×1080)</button>
+</div>
+
+<div class="post-wrapper" id="postWrapper">
+  <div class="post" id="postContainer">
+    <div class="accent-top"></div>
+
+```
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-box">
+      <img src="data:image/png;base64,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" alt="YG Logo" style="width:44px;height:44px;object-fit:contain;">
+    </div>
+    <div class="header-brand">
+      <span class="name">YEŞİL ÖZEL GÜVENLİK</span>
+      <span class="sub">Eğitim ve Koruma Hizmetleri</span>
+    </div>
+  </div>
+  <div class="badge-kontenjan">KONTENJAN SINIRLI</div>
+</div>
+
+<!-- Title -->
+<div class="title-area">
+  <div class="title-label" id="postTypeLabel">ÖZEL GÜVENLİK</div>
+  <div class="title-main" id="postMainTitle">
+    <span class="green">YENİLEME</span><br>EĞİTİMİ
+  </div>
+  <div class="title-sub">Profesyonel Güvenlik Eğitimi</div>
+</div>
+
+<div class="divider divider-1"></div>
+
+<!-- Dates -->
+<div class="dates">
+  <div class="date-card">
+    <svg class="dc-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="6" width="24" height="22" rx="4" stroke="#34d399" stroke-width="1.8" fill="none"/>
+      <path d="M4 14h24" stroke="#34d399" stroke-width="1.8"/>
+      <path d="M11 3v6M21 3v6" stroke="#34d399" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="16" cy="22" r="2" fill="#34d399"/>
+    </svg>
+    <div class="dc-label">Son Başvuru</div>
+    <div class="dc-value" id="postSonBasvuru">02 Mart 2026</div>
+  </div>
+  <div class="date-card">
+    <svg class="dc-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 4L3 12l13 8 13-8L16 4z" stroke="#34d399" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+      <path d="M7 15v7c0 0 3.5 5 9 5s9-5 9-5v-7" stroke="#34d399" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M27 12v9" stroke="#34d399" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="27" cy="23" r="1.5" fill="#34d399"/>
+    </svg>
+    <div class="dc-label">Kurs Başlangıç</div>
+    <div class="dc-value" id="postKursBaslangic">05 Mart 2026</div>
+  </div>
+  <div class="date-card">
+    <svg class="dc-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="4" width="22" height="25" rx="3" stroke="#34d399" stroke-width="1.8" fill="none"/>
+      <path d="M10 12h12M10 17h8M10 22h10" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="23" cy="23" r="5.5" fill="#0f1f14" stroke="#34d399" stroke-width="1.8"/>
+      <path d="M20.5 23l1.8 1.8 3.2-3.2" stroke="#34d399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="dc-label">Sınav Tarihi</div>
+    <div class="dc-value" id="postSinavTarihi">03 Mayıs 2026</div>
+  </div>
+</div>
+
+<!-- Info row -->
+<div class="info-row">
+  <div class="info-card">
+    <svg class="ic-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 3L5 9v10c0 8.5 6 14.5 14 17 8-2.5 14-8.5 14-17V9L19 3z" stroke="#34d399" stroke-width="1.8" fill="none"/>
+      <path d="M14 19l3.5 3.5 7-7" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="ic-content">
+      <span class="ic-label">Sertifika Türü</span>
+      <span class="ic-value" id="postSertifika">Silahlı & Silahsız</span>
+    </div>
+  </div>
+  <div class="info-card">
+    <svg class="ic-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="14" stroke="#34d399" stroke-width="1.8" fill="none"/>
+      <path d="M19 10v10l6 4" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="19" cy="19" r="2" fill="#34d399"/>
+    </svg>
+    <div class="ic-content">
+      <span class="ic-label">Eğitim Süresi</span>
+      <span class="ic-value" id="postSure">Silahlı: 7 gün / Silahsız: 6 gün</span>
+    </div>
+  </div>
+</div>
+
+<!-- Notice -->
+<div class="notice">
+  <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="11" cy="11" r="9.5" stroke="#34d399" stroke-width="1.5" fill="none"/>
+    <path d="M11 10v5" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="11" cy="7" r="1.2" fill="#34d399"/>
+  </svg>
+  <p>Detaylı bilgi için hafta içi <strong>09.00 – 18.00</strong>, Cumartesi <strong>09.00 – 16.00</strong> saatleri arasında bize ulaşabilirsiniz.</p>
+</div>
+
+<div class="divider divider-2"></div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-item">
+    <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.6 3H4a1 1 0 00-1 1 12 12 0 0011 11 1 1 0 001-1v-2.6a1 1 0 00-.7-1l-2.5-.7a1 1 0 00-1 .3l-.8.8a9.4 9.4 0 01-4.4-4.4l.8-.8a1 1 0 00.3-1L6.6 3z" stroke="#34d399" stroke-width="1.3" fill="none"/>
+    </svg>
+    <span>0262 325 36 66</span>
+  </div>
+  <div class="footer-item">
+    <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="9" cy="9" r="7.5" stroke="#34d399" stroke-width="1.3" fill="none"/>
+      <ellipse cx="9" cy="9" rx="3.5" ry="7.5" stroke="#34d399" stroke-width="1.3" fill="none"/>
+      <path d="M1.5 9h15M2.5 5.5h13M2.5 12.5h13" stroke="#34d399" stroke-width="0.8" opacity="0.5"/>
+    </svg>
+    <span>yesilozelguvenlik.com</span>
+  </div>
+  <div class="footer-item">
+    <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 1.5A5 5 0 014 6.5C4 10.5 9 16.5 9 16.5s5-6 5-10A5 5 0 009 1.5z" stroke="#34d399" stroke-width="1.3" fill="none"/>
+      <circle cx="9" cy="6.5" r="2" stroke="#34d399" stroke-width="1.3" fill="none"/>
+    </svg>
+    <span class="addr">Ömerağa Mh. Naci Girginsoy Cd. No:7/4 İzmit/Kocaeli</span>
+  </div>
+</div>
+
+<div class="accent-bottom"></div>
+```
+
+  </div>
+</div>
+
+<p class="note">Bilgileri yukarıdan düzenleyip "PNG Olarak İndir" butonuna tıklayın.</p>
+
+<script>
+function updatePost() {
+  const egitimTuru = document.getElementById('egitimTuru').value;
+  const sertifikaTuru = document.getElementById('sertifikaTuru').value;
+  const sonBasvuru = document.getElementById('sonBasvuru').value;
+  const kursBaslangic = document.getElementById('kursBaslangic').value;
+  const sinavTarihi = document.getElementById('sinavTarihi').value;
+  const egitimSuresi = document.getElementById('egitimSuresi').value;
+
+  const titleEl = document.getElementById('postMainTitle');
+  if (egitimTuru === 'TEMEL') {
+    titleEl.innerHTML = '<span class="green">TEMEL</span><br>EĞİTİMİ';
+  } else {
+    titleEl.innerHTML = '<span class="green">YENİLEME</span><br>EĞİTİMİ';
+  }
+
+  document.getElementById('postSonBasvuru').textContent = sonBasvuru;
+  document.getElementById('postKursBaslangic').textContent = kursBaslangic;
+  document.getElementById('postSinavTarihi').textContent = sinavTarihi;
+  document.getElementById('postSertifika').textContent = sertifikaTuru;
+  document.getElementById('postSure').textContent = egitimSuresi;
+}
+
+async function downloadPost() {
+  const el = document.getElementById('postContainer');
+  if (typeof html2canvas === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    document.head.appendChild(s);
+    await new Promise(r => s.onload = r);
+  }
+  const canvas = await html2canvas(el, {
+    width: 1080, height: 1080, scale: 1,
+    useCORS: true, backgroundColor: '#0f1f14'
+  });
+  const link = document.createElement('a');
+  link.download = 'yesil-guvenlik-egitim-ilani.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+</script>
 
-    const SheetsAPI = {
-      async getSheet(sheetName) {
-        try { const response = await fetch(SHEETS_CONFIG.WEB_APP_URL + '?sheet=' + sheetName); const result = await response.json(); return result.success ? (result.data || []) : []; }
-        catch (error) { return []; }
-      },
-      async bulkUpdate(sheetName, rows) {
-        try { const response = await fetch(SHEETS_CONFIG.WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ sheet: sheetName, action: 'bulkUpdate', data: rows }) }); const result = await response.json(); return result.success; }
-        catch (error) { return false; }
-      },
-      rowToKayit(row) {
-        if (!row || row.length < 2) return null;
-        return {
-          id: parseInt(row[0]) || Date.now(),
-          adSoyad: row[1] || '',
-          tcKimlik: row[2] || '',
-          telefon: row[3] || '',
-          donem: row[4] || '',
-          egitimCesidi: row[5] || '',
-          egitimTuru: row[6] || '',
-          sinif: row[7] || '',
-          saglikRaporuTarihi: row[8] || '',
-          kayitTarihi: row[9] || '',
-          kayitSaati: row[10] || '',
-          toplamUcret: parseFloat(row[11]) || 0,
-          odenen: parseFloat(row[12]) || 0,
-          odemeTarihi: row[13] || '',
-          odemeTuru: row[14] || 'pesin',
-          taksitSayisi: parseInt(row[15]) || 0,
-          vadeTarihi: row[16] || '',
-          vadeTarihi2: row[17] || '',
-          makbuzNo: row[18] || '',
-          faturaKesildi: row[19] === 'true' || row[19] === true,
-          faturaNo: row[20] || '',
-          arsivlendi: row[21] === 'true' || row[21] === true,
-          aciklama: row[22] || '',
-          sinavPuan: row[23] || '',
-          duzenlemeTarihi: row[24] || '',
-          gecerlilikSuresi: row[25] || '',
-          belgeNo: row[26] || '',
-          odenenTutar2: parseFloat(row[27]) || 0,
-          odemeTarihi2: row[28] || ''
-        };
-      },
-      kayitToRow(k) {
-        return [
-          k.id, k.adSoyad, k.tcKimlik, k.telefon, k.donem, k.egitimCesidi, k.egitimTuru, k.sinif,
-          k.saglikRaporuTarihi, k.kayitTarihi, k.kayitSaati, k.toplamUcret, k.odenen, k.odemeTarihi,
-          k.odemeTuru, k.taksitSayisi, k.vadeTarihi, k.vadeTarihi2, k.makbuzNo, k.faturaKesildi,
-          k.faturaNo, k.arsivlendi, k.aciklama,
-          k.sinavPuan, k.duzenlemeTarihi, k.gecerlilikSuresi, k.belgeNo,
-          k.odenenTutar2, k.odemeTarihi2
-        ];
-      },
-      rowToGider(row) { if (!row || row.length < 2) return null; return { id: parseInt(row[0]) || Date.now(), kategori: row[1] || '', aciklama: row[2] || '', tutar: parseFloat(row[3]) || 0, tarih: row[4] || '' }; },
-      giderToRow(g) { return [g.id, g.kategori, g.aciklama, g.tutar, g.tarih]; },
-      kasaToRow(amount, date) { return [Date.now(), 'Kasa Borcu', amount, date || new Date().toISOString()]; }
-    };
-
-    const Icon = ({ name, size = 20, className = '' }) => {
-      const ref = React.useRef(null);
-      React.useEffect(() => { if (ref.current && lucide[name]) { ref.current.innerHTML = ''; const svg = lucide.createElement(lucide[name]); svg.setAttribute('width', size); svg.setAttribute('height', size); if (className) svg.setAttribute('class', className); ref.current.appendChild(svg); } }, [name, size, className]);
-      return React.createElement('span', { ref, style: { display: 'inline-flex', alignItems: 'center' } });
-    };
-
-    const DateInput = ({ value, onChange, required, className, placeholder = "Gün / Ay / Yıl", focusColor = "green" }) => {
-      const borderColor = focusColor === "blue" ? "focus:border-blue-500" : "focus:border-green-500";
-      return (
-        <div className="relative">
-          <input
-            type="date"
-            required={required}
-            className={`w-full p-3 border-2 border-gray-200 rounded-xl ${borderColor} focus:outline-none pr-10 ${className || ''}`}
-            value={value}
-            onChange={onChange}
-            max="9999-12-31"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-            <Icon name="Calendar" size={18} />
-          </div>
-        </div>
-      );
-    };
-
-    const DB = {
-      useSheets: true,
-      async loadFromSheets() {
-        if (!this.useSheets) return { kayitlar: [], giderler: [], kasa_borc: 0 };
-        try {
-          const kayitlarRows = await SheetsAPI.getSheet(SHEETS_CONFIG.SHEET_NAMES.KAYITLAR);
-          const giderlerRows = await SheetsAPI.getSheet(SHEETS_CONFIG.SHEET_NAMES.GIDERLER);
-          const kasaRows = await SheetsAPI.getSheet(SHEETS_CONFIG.SHEET_NAMES.KASA);
-
-          let kasaBorc = 0;
-          if (kasaRows && kasaRows.length > 1) {
-            const lastRow = kasaRows[kasaRows.length - 1];
-            kasaBorc = parseFloat(lastRow[2]) || 0;
-          }
-
-          return {
-            kayitlar: kayitlarRows.slice(1).map(row => SheetsAPI.rowToKayit(row)).filter(Boolean),
-            giderler: giderlerRows.slice(1).map(row => SheetsAPI.rowToGider(row)).filter(Boolean),
-            kasa_borc: kasaBorc
-          };
-        } catch (error) { return { kayitlar: [], giderler: [], kasa_borc: 0 }; }
-      },
-      async saveKayitlarToSheets(kayitlar) { if (this.useSheets) { try { await SheetsAPI.bulkUpdate(SHEETS_CONFIG.SHEET_NAMES.KAYITLAR, kayitlar.map(k => SheetsAPI.kayitToRow(k))); } catch (e) { } } },
-      async saveGiderlerToSheets(giderler) { if (this.useSheets) { try { await SheetsAPI.bulkUpdate(SHEETS_CONFIG.SHEET_NAMES.GIDERLER, giderler.map(g => SheetsAPI.giderToRow(g))); } catch (e) { } } },
-      async saveKasaToSheets(amount, date) { if (this.useSheets) { try { await SheetsAPI.bulkUpdate(SHEETS_CONFIG.SHEET_NAMES.KASA, [SheetsAPI.kasaToRow(amount, date)]); } catch (e) { } } },
-
-      get: (key) => { try { return JSON.parse(localStorage.getItem('yesil_' + key)) || (key === 'kasa_borc' ? 0 : []); } catch { return key === 'kasa_borc' ? 0 : []; } },
-      set: (key, data, extra) => {
-        localStorage.setItem('yesil_' + key, JSON.stringify(data));
-        if (key === 'kayitlar') DB.saveKayitlarToSheets(data);
-        else if (key === 'giderler') DB.saveGiderlerToSheets(data);
-        else if (key === 'kasa_borc') DB.saveKasaToSheets(data, extra);
-      },
-      migrate: async () => { if (DB.useSheets) return await DB.loadFromSheets(); let k = DB.get('kayitlar'); if (!Array.isArray(k)) k = []; return { kayitlar: k.map(item => ({ ...item, odenen: item.odenen || 0, toplamUcret: item.toplamUcret || 0, arsivlendi: item.arsivlendi || false, sinif: item.sinif || '', odemeTuru: item.odemeTuru || 'pesin', taksitSayisi: item.taksitSayisi || 0, aciklama: item.aciklama || '' })), giderler: DB.get('giderler') || [], kasa_borc: DB.get('kasa_borc') || 0 }; }
-    };
-
-    // SHA-256 Hash fonksiyonları
-    const hashPassword = async (password) => {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(password + '_yesil_guvenlik_salt_2024');
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    };
-
-    const hashUsername = async (username) => {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(username + '_yesil_user_salt');
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    };
-
-    // Önceden hesaplanmış hash'ler (kullanıcı adı ve şifreler kodda YOK)
-    const DEFAULT_USERS = {
-      'bbf582b0e5ad2f14cdaff705ec335b0b032909d88fa783d5df01bf1cc02da257': {
-        passwordHash: '2ed8c21b6061f938259d4646711b705d153c2f3a5ab2f6bb7c600d6093103ad8',
-        role: 'admin',
-        name: 'Yönetici',
-        active: true
-      },
-      '093108d1196b3ea35800e09fb6f9dc58c913a6de1daa826aa7c24b57e9386b4b': {
-        passwordHash: 'e66ef2c7851aa94442a245c643b3ff95a0a7687ee117dea31a679163bd90d300',
-        role: 'sekreter',
-        name: 'Sekreter',
-        active: true
-      }
-    };
-
-    const UserManager = {
-      init: async () => {
-        if (!localStorage.getItem('yesil_users_v4')) {
-          localStorage.setItem('yesil_users_v4', JSON.stringify(DEFAULT_USERS));
-          localStorage.removeItem('yesil_users');
-          localStorage.removeItem('yesil_users_v2');
-          localStorage.removeItem('yesil_users_v3');
-        }
-      },
-      getUsers: () => { try { return JSON.parse(localStorage.getItem('yesil_users_v4')) || {}; } catch { return {}; } },
-      saveUsers: (users) => localStorage.setItem('yesil_users_v4', JSON.stringify(users)),
-      addUser: async (username, password, role, name) => {
-        const users = UserManager.getUsers();
-        const userHash = await hashUsername(username);
-        users[userHash] = { passwordHash: await hashPassword(password), role, name, active: true };
-        UserManager.saveUsers(users);
-        return true;
-      },
-      updateUser: async (usernameHash, updates) => {
-        const users = UserManager.getUsers();
-        if (users[usernameHash]) {
-          if (updates.password) {
-            updates.passwordHash = await hashPassword(updates.password);
-            delete updates.password;
-          }
-          users[usernameHash] = { ...users[usernameHash], ...updates };
-          UserManager.saveUsers(users);
-          return true;
-        }
-        return false;
-      },
-      deleteUser: (usernameHash) => { const users = UserManager.getUsers(); delete users[usernameHash]; UserManager.saveUsers(users); },
-      verifyPassword: async (username, password) => {
-        const users = UserManager.getUsers();
-        const userHash = await hashUsername(username);
-        const user = users[userHash];
-        if (!user) return false;
-        const passHash = await hashPassword(password);
-        return user.passwordHash === passHash;
-      },
-      findUser: async (username) => {
-        const users = UserManager.getUsers();
-        const userHash = await hashUsername(username);
-        return { user: users[userHash], hash: userHash };
-      }
-    };
-
-    const ActivityLog = {
-      log: (username, action, details = '') => { const logs = ActivityLog.getLogs(); logs.unshift({ id: Date.now(), username, action, details, timestamp: new Date().toISOString() }); if (logs.length > 500) logs.pop(); localStorage.setItem('yesil_activity_logs', JSON.stringify(logs)); },
-      getLogs: () => { try { return JSON.parse(localStorage.getItem('yesil_activity_logs')) || []; } catch { return []; } },
-      clearLogs: () => localStorage.setItem('yesil_activity_logs', JSON.stringify([]))
-    };
-
-    const Auth = {
-      getCurrentUser: () => { try { const u = sessionStorage.getItem('yesil_user'); return u ? JSON.parse(u) : null; } catch { return null; } },
-      login: async (username, password) => {
-        const { user, hash } = await UserManager.findUser(username);
-        if (user && user.active !== false) {
-          const isValid = await UserManager.verifyPassword(username, password);
-          if (isValid) {
-            const userData = { username, userHash: hash, role: user.role, name: user.name };
-            sessionStorage.setItem('yesil_user', JSON.stringify(userData));
-            ActivityLog.log(username, 'GİRİŞ', 'Sisteme giriş yaptı');
-            return userData;
-          }
-        }
-        return null;
-      },
-      logout: () => { const user = Auth.getCurrentUser(); if (user) ActivityLog.log(user.username, 'ÇIKIŞ', 'Sistemden çıkış yaptı'); sessionStorage.removeItem('yesil_user'); }
-    };
-
-    const formatCurrency = (v) => (v || 0).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' });
-    const formatDate = (d) => d ? new Date(d).toLocaleDateString('tr-TR') : '-';
-    const formatPhone = (value) => { const cleaned = value.replace(/\D/g, ''); if (cleaned.length === 0) return '0('; if (cleaned.length === 1 && cleaned === '0') return '0('; let num = cleaned.startsWith('0') ? cleaned : '0' + cleaned; if (num.length <= 2) return '0(' + num.slice(1); if (num.length <= 4) return '0(' + num.slice(1); if (num.length <= 7) return '0(' + num.slice(1, 4) + ') ' + num.slice(4); if (num.length <= 9) return '0(' + num.slice(1, 4) + ') ' + num.slice(4, 7) + ' ' + num.slice(7); return '0(' + num.slice(1, 4) + ') ' + num.slice(4, 7) + ' ' + num.slice(7, 9) + ' ' + num.slice(9, 11); };
-    // Telefon numarasını tabloda göstermek için (05XX XXX XX XX formatında)
-    const formatPhoneDisplay = (value) => {
-      if (!value) return '-';
-      const cleaned = value.replace(/\D/g, '');
-      if (cleaned.length < 10) return value;
-      return cleaned.slice(0, 4) + ' ' + cleaned.slice(4, 7) + ' ' + cleaned.slice(7, 9) + ' ' + cleaned.slice(9, 11);
-    };
-    // XLSX Export fonksiyonu - SheetJS kullanarak gerçek Excel dosyası oluşturur
-    const exportToExcel = async (data, filename, columns) => {
-      // SheetJS kütüphanesini dinamik olarak yükle
-      if (!window.XLSX) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
-        document.head.appendChild(script);
-        await new Promise(resolve => script.onload = resolve);
-      }
-
-      // Verileri hazırla
-      const wsData = [];
-
-      // Başlık satırı
-      wsData.push(columns.map(col => col.label));
-
-      // Veri satırları
-      data.forEach(row => {
-        const rowData = columns.map(col => {
-          let value = row[col.key];
-          if (col.format) value = col.format(row);
-          return value || '';
-        });
-        wsData.push(rowData);
-      });
-
-      // Worksheet oluştur
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-      // Sütun genişlikleri
-      const colWidths = columns.map(col => ({ wch: Math.max(col.label.length + 2, 15) }));
-      ws['!cols'] = colWidths;
-
-      // Workbook oluştur
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sayfa1');
-
-      // Dosyayı indir
-      XLSX.writeFile(wb, filename + '_' + new Date().toISOString().split('T')[0] + '.xlsx');
-    };
-
-    // Muhasebe için özel Excel export
-    const exportMuhasebeToExcel = async (data) => {
-      if (!window.XLSX) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
-        document.head.appendChild(script);
-        await new Promise(resolve => script.onload = resolve);
-      }
-
-      const wsData = [];
-
-      // Başlık satırı - istenen formatta
-      wsData.push([
-        'SN', 'ADI SOYADI', 'TC', 'TELEFON', 'Dönem', 'EĞİTİM TÜRÜ', 'Eğitim Çeşidi', 'Sınıf',
-        'TOPLAM ÜCRET', 'Ödeme Türü', 'Ödenen Tutar (1.Ödeme)', 'Ödeme Tarihi (1.Ödeme)',
-        'Vade Tarihi (2.Ödeme)', 'Ödenen Tutar (2.Ödeme)', 'Ödeme Tarihi (2.Ödeme)', 'Kalan borç', 'açıklama'
-      ]);
-
-      // Toplamları hesapla
-      let toplamUcretToplam = 0;
-      let odenen1Toplam = 0;
-      let odenen2Toplam = 0;
-      let kalanToplam = 0;
-
-      // Veri satırları
-      data.forEach((row, index) => {
-        const odenen1 = row.odenen ? (row.odenen - (row.odenenTutar2 || 0)) : 0; // 1. ödeme = toplam ödenen - 2. ödeme
-        const odenen2 = row.odenenTutar2 || 0;
-        const kalan = (row.toplamUcret || 0) - (row.odenen || 0);
-
-        toplamUcretToplam += row.toplamUcret || 0;
-        odenen1Toplam += odenen1;
-        odenen2Toplam += odenen2;
-        kalanToplam += kalan;
-
-        wsData.push([
-          index + 1,
-          row.adSoyad || '',
-          row.tcKimlik || '',
-          row.telefon ? row.telefon.replace(/\D/g, '') : '',
-          row.donem || '',
-          row.egitimTuru || '',
-          row.egitimCesidi || '',
-          row.sinif || '',
-          row.toplamUcret || 0,
-          row.odemeTuru === 'taksit' ? 'Taksit' : 'Peşin',
-          odenen1,
-          row.odemeTarihi ? formatDate(row.odemeTarihi) : '',
-          row.vadeTarihi ? formatDate(row.vadeTarihi) : '',
-          odenen2,
-          row.odemeTarihi2 ? formatDate(row.odemeTarihi2) : '',
-          kalan,
-          row.aciklama || ''
-        ]);
-      });
-
-      // GENEL TOPLAM satırı ekle
-      wsData.push([
-        '', 'GENEL TOPLAM', '', '', '', '', '', '',
-        toplamUcretToplam,
-        '',
-        odenen1Toplam,
-        '',
-        '',
-        odenen2Toplam,
-        '',
-        kalanToplam,
-        ''
-      ]);
-
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-      // Sütun genişlikleri (yeni sütun eklendi)
-      ws['!cols'] = [
-        { wch: 5 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 8 },
-        { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 12 }, { wch: 20 }
-      ];
-
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Muhasebe');
-
-      // Logs sayfası ekle
-      const logsData = [['Tarih', 'Kullanıcı', 'İşlem', 'Detay']];
-      const logs = ActivityLog.getLogs();
-      logs.forEach(log => {
-        logsData.push([
-          new Date(log.timestamp).toLocaleString('tr-TR'),
-          log.username || '',
-          log.action || '',
-          log.details || ''
-        ]);
-      });
-      const logsSheet = XLSX.utils.aoa_to_sheet(logsData);
-      logsSheet['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 20 }, { wch: 40 }];
-      XLSX.utils.book_append_sheet(wb, logsSheet, 'Logs');
-
-      XLSX.writeFile(wb, 'muhasebe_' + new Date().toISOString().split('T')[0] + '.xlsx');
-    };
-
-    function StatusBadge({ odenen, toplam }) { const kalan = toplam - odenen; if (kalan <= 0) return <span className="badge badge-success"><Icon name="CheckCircle2" size={14} /> Ödendi</span>; if (odenen > 0) return <span className="badge badge-warning"><Icon name="Clock" size={14} /> Taksitli</span>; return <span className="badge badge-danger"><Icon name="AlertCircle" size={14} /> Bekliyor</span>; }
-
-    function LoginScreen({ onLogin }) {
-      const [username, setUsername] = React.useState('');
-      const [password, setPassword] = React.useState('');
-      const [error, setError] = React.useState('');
-      const [loading, setLoading] = React.useState(false);
-
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        try {
-          const user = await Auth.login(username, password);
-          if (user) onLogin(user);
-          else setError('Kullanıcı adı veya şifre hatalı!');
-        } catch (err) {
-          setError('Giriş yapılırken bir hata oluştu!');
-        }
-        setLoading(false);
-      };
-
-      return (<div className="min-h-screen flex items-center justify-center p-4"><div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"><div className="gradient-green p-8 text-center text-white"><Icon name="Lock" size={48} className="mx-auto mb-4" /><h2 className="text-3xl font-bold mb-2">Yeşil Güvenlik</h2><p className="text-green-100">Eğitim Yönetim Sistemi</p></div><form onSubmit={handleSubmit} className="p-8 space-y-4">{error && <div className="bg-red-50 border-2 border-red-200 text-red-700 p-3 rounded-xl text-sm">{error}</div>}<div><label className="block text-sm font-semibold text-gray-700 mb-2">Kullanıcı Adı</label><input type="text" value={username} onChange={e => setUsername(e.target.value)} className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition" placeholder="Kullanıcı adınızı giriniz" required disabled={loading} /></div><div><label className="block text-sm font-semibold text-gray-700 mb-2">Şifre</label><input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition" placeholder="Şifrenizi giriniz" required disabled={loading} /></div><button type="submit" disabled={loading} className="w-full gradient-green text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition disabled:opacity-50">{loading ? 'Giriş yapılıyor...' : <><Icon name="LogIn" size={20} className="inline mr-2" />Giriş Yap</>}</button></form></div></div>);
-    }
-
-    function TahsilatModal({ student, onClose, onConfirm }) {
-      const kalan = (student.toplamUcret || 0) - (student.odenen || 0);
-      const [tutar, setTutar] = React.useState(kalan);
-
-      // Otomatik makbuz numarası üret
-      const getNextMakbuzNo = () => {
-        try {
-          const kayitlar = JSON.parse(localStorage.getItem('yesil_kayitlar_v4') || '[]');
-          let maxNo = 0;
-          kayitlar.forEach(k => {
-            if (k.makbuzNo) {
-              // Sadece sayıları çıkar
-              const num = parseInt(k.makbuzNo.replace(/\D/g, ''), 10);
-              if (!isNaN(num) && num > maxNo) maxNo = num;
-            }
-          });
-          return String(maxNo + 1);
-        } catch (e) {
-          return '1';
-        }
-      };
-
-      const [makbuz, setMakbuz] = React.useState(getNextMakbuzNo());
-      const [odemeTarihi, setOdemeTarihi] = React.useState(new Date().toISOString().split('T')[0]);
-
-      return (<div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm"><div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden fade-in"><div className="gradient-blue p-6 text-white"><div className="flex justify-between items-start"><div><h3 className="font-bold text-xl flex items-center gap-2 mb-1"><Icon name="Wallet" size={24} /> Tahsilat</h3><p className="text-blue-100 text-sm">{student.adSoyad}</p></div><button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition"><Icon name="X" size={20} /></button></div></div>
-        <form onSubmit={(e) => { e.preventDefault(); onConfirm(student.id, parseFloat(tutar), makbuz, odemeTarihi); }} className="p-6 space-y-4">
-          <div className="bg-blue-50 rounded-2xl p-4 text-center"><p className="text-xs text-blue-600 font-semibold mb-1">Kalan Tutar</p><p className="text-3xl font-bold text-blue-900">{formatCurrency(kalan)}</p></div>
-
-          {student.vadeTarihi && <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3"><Icon name="Clock" size={20} className="text-amber-600" /><div><p className="text-xs text-amber-700 font-semibold">Vade Tarihi</p><p className="font-bold text-amber-900">{formatDate(student.vadeTarihi)}</p></div></div>}
-
-          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Tahsilat Tutarı</label><input type="number" autoFocus max={kalan} min="0" step="0.01" required className="w-full p-4 border-2 border-blue-200 rounded-xl text-2xl font-bold text-center text-blue-900 focus:border-blue-500 focus:outline-none transition" value={tutar} onChange={e => setTutar(e.target.value)} /></div>
-
-          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Ödeme Tarihi</label><DateInput required value={odemeTarihi} onChange={e => setOdemeTarihi(e.target.value)} focusColor="blue" className="p-4" /></div>
-
-          <div><label className="block text-sm font-semibold text-gray-700 mb-2">Makbuz No</label><input type="text" required placeholder="Makbuz numarası" className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition" value={makbuz} onChange={e => setMakbuz(e.target.value)} /></div>
-
-          <button className="w-full gradient-blue text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition"><Icon name="Check" size={20} className="inline mr-2" />Tahsilatı Onayla</button>
-        </form></div></div>);
-    }
-
-    function GiderModal({ onClose, onSave }) {
-      const [form, setForm] = React.useState({ kategori: 'Mermi', aciklama: '', tutar: '', tarih: new Date().toISOString().split('T')[0] });
-      return (<div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm"><div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden fade-in"><div className="gradient-red p-6 text-white"><div className="flex justify-between items-center"><h3 className="font-bold text-xl flex items-center gap-2"><Icon name="TrendingDown" size={24} /> Gider Ekle</h3><button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition"><Icon name="X" size={20} /></button></div></div><div className="p-6 space-y-4"><div><label className="block text-sm font-semibold text-gray-700 mb-2">Kategori</label><select className="w-full p-4 border-2 border-gray-200 rounded-xl" value={form.kategori} onChange={e => setForm({ ...form, kategori: e.target.value })}>{GIDER_KATEGORILERI.map(k => <option key={k}>{k}</option>)}</select></div><div><label className="block text-sm font-semibold text-gray-700 mb-2">Açıklama</label><input className="w-full p-4 border-2 border-gray-200 rounded-xl" placeholder="Gider açıklaması" value={form.aciklama} onChange={e => setForm({ ...form, aciklama: e.target.value })} /></div><div><label className="block text-sm font-semibold text-gray-700 mb-2">Tutar</label><input type="number" className="w-full p-4 border-2 border-gray-200 rounded-xl font-bold text-red-600 text-xl" placeholder="0.00" value={form.tutar} onChange={e => setForm({ ...form, tutar: e.target.value })} /></div><div><label className="block text-sm font-semibold text-gray-700 mb-2">Tarih</label><DateInput value={form.tarih} onChange={e => setForm({ ...form, tarih: e.target.value })} className="p-4" /></div><button onClick={() => onSave(form)} className="w-full gradient-red text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition"><Icon name="Save" size={20} className="inline mr-2" />Gideri Kaydet</button></div></div></div>);
-    }
-
-    function OgrenciCard({ item, onEdit, onDelete }) {
-      return (<div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden card-hover"><div className="gradient-green p-4"><div className="flex items-start justify-between"><div className="flex-1"><h3 className="font-bold text-white text-lg mb-1">{item.adSoyad}</h3><p className="text-green-100 text-sm flex items-center gap-1"><Icon name="Calendar" size={14} /> {item.donem}</p></div><div className="flex gap-2"><button onClick={() => onEdit(item)} className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition"><Icon name="Edit2" size={18} className="text-white" /></button><button onClick={() => onDelete(item.id)} className="p-2 bg-white/20 hover:bg-red-500/80 rounded-lg transition"><Icon name="Trash2" size={18} className="text-white" /></button></div></div></div><div className="p-4 space-y-3"><div className="grid grid-cols-2 gap-3"><div className="bg-gray-50 rounded-xl p-3"><p className="text-xs text-gray-500 mb-1">TC Kimlik</p><p className="font-semibold text-sm">{item.tcKimlik}</p></div><div className="bg-gray-50 rounded-xl p-3"><p className="text-xs text-gray-500 mb-1">Telefon</p><p className="font-semibold text-sm">{formatPhoneDisplay(item.telefon)}</p></div></div><div className="flex items-center justify-between bg-emerald-50 rounded-xl p-3"><span className="text-sm font-semibold text-emerald-700">Eğitim</span><span className="text-sm font-bold text-emerald-900">{item.egitimCesidi} - {item.egitimTuru}</span></div>{item.sinif && <div className="flex items-center justify-between bg-blue-50 rounded-xl p-3"><span className="text-sm font-semibold text-blue-700">Sınıf</span><span className="text-sm font-bold text-blue-900">{item.sinif}</span></div>}</div></div>);
-    }
-
-    function MuhasebeCard({ item, onEdit, onTahsilat, onDelete }) {
-      const kalan = (item.toplamUcret || 0) - (item.odenen || 0); const oran = item.toplamUcret > 0 ? ((item.odenen / item.toplamUcret) * 100) : 0;
-      return (<div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden card-hover"><div className="p-4 border-b bg-gradient-to-r from-blue-50 to-white"><div className="flex items-start justify-between mb-2"><div><h3 className="font-bold text-gray-900">{item.adSoyad}</h3><p className="text-sm text-gray-500">{item.donem}</p></div><StatusBadge odenen={item.odenen} toplam={item.toplamUcret} /></div><div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden"><div className="h-full bg-green-500 transition-all" style={{ width: Math.min(oran, 100) + '%' }}></div></div></div><div className="p-4 space-y-3"><div className="grid grid-cols-2 gap-3 text-sm"><div className="bg-gray-50 rounded-lg p-2"><p className="text-xs text-gray-500">TC</p><p className="font-semibold">{item.tcKimlik}</p></div><div className="bg-gray-50 rounded-lg p-2"><p className="text-xs text-gray-500">Telefon</p><p className="font-semibold">{formatPhoneDisplay(item.telefon)}</p></div><div className="bg-gray-50 rounded-lg p-2"><p className="text-xs text-gray-500">Eğitim Türü</p><p className="font-semibold">{item.egitimCesidi}</p></div><div className="bg-gray-50 rounded-lg p-2"><p className="text-xs text-gray-500">Ödeme Türü</p><p className="font-semibold">{item.odemeTuru === 'taksit' ? 'Taksit (' + item.taksitSayisi + ')' : 'Peşin'}</p></div></div><div className="grid grid-cols-2 gap-3"><div><p className="text-xs text-gray-500 mb-1">Toplam Ücret</p><p className="font-bold text-gray-900">{formatCurrency(item.toplamUcret)}</p></div><div><p className="text-xs text-gray-500 mb-1">Ödenen</p><p className="font-bold text-green-600">{formatCurrency(item.odenen)}</p></div></div>{item.odemeTarihi && <div className="bg-green-50 rounded-xl p-3 text-sm"><p className="text-xs text-green-700 mb-1">1. Ödeme Tarihi</p><p className="font-semibold text-green-900">{formatDate(item.odemeTarihi)}</p></div>}{item.odemeTuru === 'taksit' && item.vadeTarihi && <div className="bg-amber-50 rounded-xl p-3 text-sm"><p className="text-xs text-amber-700 mb-1">Vade Tarihi</p><p className="font-semibold text-amber-900">{formatDate(item.vadeTarihi)}</p></div>}{kalan > 0 && <div className="bg-amber-50 rounded-xl p-3 border border-amber-200"><p className="text-xs text-amber-700 mb-1">Kalan Borç</p><p className="font-bold text-amber-900 text-xl">{formatCurrency(kalan)}</p></div>}{item.aciklama && <div className="bg-purple-50 rounded-xl p-3 text-sm"><p className="text-xs text-purple-700 mb-1">Açıklama</p><p className="font-semibold text-purple-900">{item.aciklama}</p></div>}<div className="flex gap-2 pt-2">{kalan > 0 && <button onClick={() => onTahsilat(item)} className="flex-1 gradient-blue text-white py-2.5 rounded-xl font-semibold text-sm shadow hover:shadow-lg transition"><Icon name="Wallet" size={16} className="inline mr-1" />Tahsilat</button>}<button onClick={() => onEdit(item)} className="px-4 bg-gray-100 hover:bg-gray-200 rounded-xl transition"><Icon name="Edit2" size={16} className="text-gray-600" /></button><button onClick={() => onDelete(item.id)} className="px-4 bg-gray-100 hover:bg-red-100 rounded-xl transition group"><Icon name="Trash2" size={16} className="text-gray-600 group-hover:text-red-600" /></button></div></div></div>);
-    }
-
-    function KayitForm({ editItem, viewMode, onClose, onSave }) {
-      const getDonemler = (egitimTuru) => egitimTuru === 'Yenileme' ? YENILEME_DONEMLER : TEMEL_DONEMLER;
-      // Yeni kayıtta dropdown'lar boş başlasın, edit modunda mevcut değerler gelsin
-      const isNew = viewMode === 'new' && !editItem;
-      const [form, setForm] = React.useState(editItem || {
-        adSoyad: '',
-        tcKimlik: '',
-        telefon: '0(',
-        donem: '',
-        egitimCesidi: '',
-        egitimTuru: '',
-        sinif: '',
-        saglikRaporuTarihi: '',
-        kayitTarihi: '',
-        kayitSaati: '',
-        toplamUcret: 0,
-        odenen: 0,
-        odemeTarihi: '',
-        odemeTuru: '',
-        taksitSayisi: 2,
-        vadeTarihi: '',
-        vadeTarihi2: '',
-        makbuzNo: '',
-        faturaKesildi: false,
-        faturaNo: '',
-        aciklama: '',
-        sinavPuan: '',
-        duzenlemeTarihi: '',
-        gecerlilikSuresi: '',
-        belgeNo: ''
-      });
-
-      React.useEffect(() => {
-        if (form.egitimTuru) {
-          const donemler = getDonemler(form.egitimTuru);
-          if (!donemler.includes(form.donem)) setForm(p => ({ ...p, donem: donemler[0] }));
-        }
-      }, [form.egitimTuru]);
-
-      const handleChange = (f, v) => setForm(p => ({ ...p, [f]: v }));
-      const handleSaveWithDateTime = () => {
-        // Validasyonlar
-        if (form.tcKimlik && !/^\d{11}$/.test(form.tcKimlik)) { alert('TC Kimlik No 11 haneli rakamlardan oluşmalıdır!'); return; }
-        if (form.telefon && form.telefon !== '0(' && !/^0\d{10}$/.test(form.telefon.replace(/[\s()-]/g, ''))) { alert('Telefon numarası 10 haneli olmalıdır!'); return; }
-        if (form.odenen > form.toplamUcret) { alert('Ödenen tutar toplam ücretten fazla olamaz!'); return; }
-
-        // Boş alan kontrolü (sadece yeni kayıtta)
-        if (viewMode === 'new') {
-          const eksikAlanlar = [];
-          if (!form.adSoyad.trim()) eksikAlanlar.push('Ad Soyad');
-          if (!form.tcKimlik.trim()) eksikAlanlar.push('TC Kimlik No');
-          if (!form.telefon || form.telefon === '0(') eksikAlanlar.push('Telefon');
-          if (!form.egitimTuru) eksikAlanlar.push('Eğitim Türü');
-          if (!form.donem) eksikAlanlar.push('Dönem');
-          if (!form.egitimCesidi) eksikAlanlar.push('Eğitim Çeşidi');
-          if (!form.sinif) eksikAlanlar.push('Sınıf');
-          if (!form.odemeTuru) eksikAlanlar.push('Ödeme Türü');
-          if (!form.toplamUcret || form.toplamUcret <= 0) eksikAlanlar.push('Toplam Ücret');
-          if (form.odenen === 0 || form.odenen === '' || form.odenen === undefined) eksikAlanlar.push('Ödenen Tutar');
-          if (!form.odemeTarihi) eksikAlanlar.push('Ödeme Tarihi');
-          if (!form.makbuzNo.trim()) eksikAlanlar.push('Makbuz No');
-
-          if (eksikAlanlar.length > 0) {
-            if (!confirm('Aşağıdaki alanlar boş:\n\n' + eksikAlanlar.join('\n') + '\n\nBu şekilde kaydetmek istediğinize emin misiniz?')) {
-              return;
-            }
-          }
-        }
-
-        const now = new Date();
-        onSave({ ...form, kayitTarihi: form.kayitTarihi || now.toISOString().split('T')[0], kayitSaati: form.kayitSaati || now.toTimeString().split(' ')[0].substring(0, 5) });
-        alert('✅ Kayıt başarıyla kaydedildi!');
-      };
-
-      const showPersonal = viewMode === 'new' || viewMode === 'personal';
-      const showFinancial = viewMode === 'new' || viewMode === 'financial';
-      const currentDonemler = getDonemler(form.egitimTuru);
-
-      return (
-        <div className={viewMode === 'new' ? 'static' : 'fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm'}>
-          <div className={'bg-white rounded-3xl w-full ' + (viewMode === 'new' ? 'max-w-5xl mx-auto shadow-lg border' : 'max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl')}>
-            {viewMode !== 'new' && <div className="p-5 border-b sticky top-0 bg-white z-10 flex justify-between items-center rounded-t-3xl"><h3 className="font-bold text-xl text-gray-800 flex items-center gap-2"><Icon name={viewMode === 'personal' ? 'User' : 'Receipt'} size={24} />{viewMode === 'personal' ? 'Kursiyer Bilgileri' : 'Muhasebe Kaydı'}</h3><button onClick={onClose} className="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition"><Icon name="X" size={20} /></button></div>}
-            <div className="p-6">
-              {showPersonal && <div className="mb-8"><h4 className="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2"><Icon name="UserCircle" size={20} className="text-green-600" />Kişisel Bilgiler</h4><div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Ad Soyad</label><input className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" placeholder="Ad Soyad" value={form.adSoyad} onChange={e => handleChange('adSoyad', e.target.value)} /></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">TC Kimlik No</label><input className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" placeholder="11 haneli TC" value={form.tcKimlik} onChange={e => handleChange('tcKimlik', e.target.value)} maxLength="11" /></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Telefon</label><input className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" placeholder="0(5__) ___ __ __" value={form.telefon} onChange={e => handleChange('telefon', formatPhone(e.target.value))} maxLength="17" /></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Eğitim Türü</label><select className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" value={form.egitimTuru} onChange={e => handleChange('egitimTuru', e.target.value)}><option value="">Seçiniz</option><option>Temel</option><option>Yenileme</option><option value="Silah Farkı">Silah Farkı</option></select></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Dönem</label><select className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" value={form.donem} onChange={e => handleChange('donem', e.target.value)}><option value="">Seçiniz</option>{currentDonemler.map(d => <option key={d}>{d}</option>)}</select></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Eğitim Çeşidi</label><select className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" value={form.egitimCesidi} onChange={e => handleChange('egitimCesidi', e.target.value)}><option value="">Seçiniz</option><option>Silahlı</option><option>Silahsız</option></select></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Sınıf</label><select className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" value={form.sinif} onChange={e => handleChange('sinif', e.target.value)}><option value="">Seçiniz</option>{SINIFLAR.map(s => <option key={s}>{s}</option>)}</select></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Sağlık Raporu Tarihi</label><DateInput required value={form.saglikRaporuTarihi} onChange={e => handleChange('saglikRaporuTarihi', e.target.value)} /></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Kayıt Tarihi</label><input type="text" className="w-full p-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-500" value={form.kayitTarihi ? formatDate(form.kayitTarihi) : ''} placeholder="Tarih Otomatik Verilecek" readOnly /></div>
-
-                {/* Belge ve Sınav Bilgileri - sadece düzenleme modunda göster */}
-                {viewMode !== 'new' && <>
-                  <div className="border-t pt-4 mt-2 md:col-span-2"><h5 className="font-bold text-gray-700 mb-2">Belge ve Sınav Bilgileri</h5></div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Sınav Seviye Puanı</label>
-                    <input type="number" min="0" max="100" className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" placeholder="0-100" value={form.sinavPuan} onChange={e => {
-                      let val = parseInt(e.target.value);
-                      if (isNaN(val)) { handleChange('sinavPuan', ''); return; }
-                      if (val > 100) val = 100;
-                      if (val < 0) val = 0;
-                      handleChange('sinavPuan', val);
-                    }} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Belge No</label>
-                    <input type="text" className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" placeholder="Belge Numarası" value={form.belgeNo} onChange={e => handleChange('belgeNo', e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Düzenleme Tarihi</label>
-                    <DateInput value={form.duzenlemeTarihi} onChange={e => handleChange('duzenlemeTarihi', e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Geçerlilik Süresi</label>
-                    <DateInput value={form.gecerlilikSuresi} onChange={e => handleChange('gecerlilikSuresi', e.target.value)} />
-                  </div>
-                </>}
-                {/* Belge ve Sınav Bilgileri Sonu */}
-
-              </div></div>}
-              {showFinancial && <div><h4 className="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2"><Icon name="Receipt" size={20} className="text-blue-600" />Muhasebe Bilgileri</h4><div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Ödeme Türü</label><select className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none" value={form.odemeTuru} onChange={e => { const v = e.target.value; handleChange('odemeTuru', v); if (v === 'pesin') { handleChange('taksitSayisi', 0); handleChange('vadeTarihi', ''); handleChange('vadeTarihi2', ''); handleChange('odenen', form.toplamUcret); } else if (v === 'taksit') { handleChange('odenen', 0); } }}><option value="">Seçiniz</option><option value="pesin">Peşin</option><option value="taksit">Taksit</option></select></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Toplam Ücret</label><input type="number" className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none font-bold text-lg" placeholder="0.00" value={form.toplamUcret === 0 ? '' : form.toplamUcret} onChange={e => { const val = parseFloat(e.target.value) || 0; handleChange('toplamUcret', val); if (form.odemeTuru === 'pesin') handleChange('odenen', val); }} /></div>
-                {form.odemeTuru === 'taksit' && <div><label className="block text-sm font-semibold text-gray-700 mb-2">Taksit Sayısı</label><select className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none" value={form.taksitSayisi} onChange={e => { const s = parseInt(e.target.value) || 0; handleChange('taksitSayisi', s); if (s < 3) handleChange('vadeTarihi2', ''); }}><option value="2">2 Taksit</option></select></div>}
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Ödenen Tutar</label><input type="number" className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none font-bold text-lg text-green-600" placeholder="0.00" value={form.odenen === 0 ? '' : form.odenen} onChange={e => { const val = parseFloat(e.target.value) || 0; if (val <= form.toplamUcret) handleChange('odenen', val); else { handleChange('odenen', form.toplamUcret); alert('Ödenen tutar toplam ücretten fazla olamaz!'); } }} /></div>
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Ödeme Tarihi</label><DateInput required value={form.odemeTarihi} onChange={e => handleChange('odemeTarihi', e.target.value)} focusColor="blue" /></div>
-                {form.odemeTuru === 'taksit' && <div><label className="block text-sm font-semibold text-gray-700 mb-2">Vade Tarihi</label><DateInput required value={form.vadeTarihi} onChange={e => handleChange('vadeTarihi', e.target.value)} focusColor="blue" /></div>}
-                <div><label className="block text-sm font-semibold text-gray-700 mb-2">Makbuz No</label><input className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none" placeholder="Makbuz No" value={form.makbuzNo} onChange={e => handleChange('makbuzNo', e.target.value)} /></div>
-                <div className="md:col-span-2"><label className="block text-sm font-semibold text-gray-700 mb-2">Açıklama</label><textarea className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none resize-none" placeholder="Açıklama (opsiyonel)" rows="2" value={form.aciklama} onChange={e => handleChange('aciklama', e.target.value)} /></div>
-                <div className="md:col-span-2"><label className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl cursor-pointer hover:bg-blue-100 transition"><input type="checkbox" checked={form.faturaKesildi} onChange={e => handleChange('faturaKesildi', e.target.checked)} className="w-5 h-5 text-blue-600 rounded" /><span className="font-semibold text-blue-900">Fatura Kesildi</span></label></div>
-                {form.faturaKesildi && <div className="md:col-span-2"><label className="block text-sm font-semibold text-gray-700 mb-2">Fatura No</label><input className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none" placeholder="Fatura Numarası" value={form.faturaNo} onChange={e => handleChange('faturaNo', e.target.value)} /></div>}
-              </div></div>}
-              <div className="flex gap-3 mt-8 pt-6 border-t">{viewMode !== 'new' && <button onClick={onClose} className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition">İptal</button>}<button onClick={handleSaveWithDateTime} className="flex-1 gradient-green text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition"><Icon name="Save" size={20} className="inline mr-2" />Kaydet</button></div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function KasaView({ kayitlar, giderler, onBorcChange }) {
-      const [borcModal, setBorcModal] = React.useState(null); // 'al' veya 'ode'
-      const [tutar, setTutar] = React.useState('');
-      const [islemTarihi, setIslemTarihi] = React.useState(new Date().toISOString().split('T')[0]);
-      const kasaBorc = DB.get('kasa_borc') || 0;
-
-      const toplamOgrenciGeliri = kayitlar.filter(k => !k.arsivlendi).reduce((sum, k) => sum + (k.odenen || 0), 0);
-      const toplamGider = giderler.reduce((sum, g) => sum + (g.tutar || 0), 0);
-      const kasadakiPara = toplamOgrenciGeliri - toplamGider;
-
-      const handleBorcIslem = (e) => {
-        e.preventDefault();
-        const val = parseFloat(tutar);
-        if (!val || val <= 0) return;
-        const yeniBorc = borcModal === 'al' ? kasaBorc + val : kasaBorc - val;
-        onBorcChange(yeniBorc, islemTarihi);
-        setBorcModal(null);
-        setTutar('');
-        setIslemTarihi(new Date().toISOString().split('T')[0]);
-      };
-
-      return (
-        <div className="fade-in space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Kasa Durumu */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="gradient-green p-6 text-white">
-                <h2 className="text-xl font-bold flex items-center gap-2"><Icon name="Landmark" size={24} /> Kasa Durumu</h2>
-              </div>
-              <div className="p-8 text-center">
-                <p className="text-gray-500 font-medium mb-2">Kasadaki Toplam Para</p>
-                <p className="text-4xl font-extrabold text-gray-800">{formatCurrency(kasadakiPara)}</p>
-                <div className="mt-6 flex justify-between text-sm text-gray-500 px-4">
-                  <div className="text-center">
-                    <p className="text-green-600 font-bold">{formatCurrency(toplamOgrenciGeliri)}</p>
-                    <p>Gelir</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-red-600 font-bold">{formatCurrency(toplamGider)}</p>
-                    <p>Gider</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Borç Durumu */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="gradient-purple p-6 text-white">
-                <h2 className="text-xl font-bold flex items-center gap-2"><Icon name="Wallet" size={24} /> Borç Takibi</h2>
-              </div>
-              <div className="p-8 text-center">
-                <p className="text-gray-500 font-medium mb-2">Kasaya Borç</p>
-                <p className={"text-4xl font-extrabold " + (kasaBorc > 0 ? "text-purple-600" : "text-gray-400")}>{formatCurrency(kasaBorc)}</p>
-                <div className="mt-6 flex gap-3">
-                  <button onClick={() => setBorcModal('al')} className="flex-1 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl font-bold transition">Borç Al</button>
-                  <button onClick={() => setBorcModal('ode')} disabled={kasaBorc <= 0} className="flex-1 py-3 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed">Borç Öde</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {borcModal && (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-              <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 fade-in">
-                <h3 className="text-xl font-bold mb-4">{borcModal === 'al' ? 'Borç Al' : 'Borç Öde'}</h3>
-                <form onSubmit={handleBorcIslem}>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tarih</label>
-                  <div className="mb-4"><DateInput required value={islemTarihi} onChange={e => setIslemTarihi(e.target.value)} focusColor="blue" className="p-4" /></div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tutar</label>
-                  <input type="number" autoFocus min="0" step="0.01" className="w-full p-4 border-2 border-gray-200 rounded-xl font-bold text-center text-2xl mb-4 focus:border-blue-500 focus:outline-none" value={tutar} onChange={e => setTutar(e.target.value)} placeholder="0.00" />
-                  <div className="flex gap-3">
-                    <button type="button" onClick={() => setBorcModal(null)} className="flex-1 py-3 bg-gray-100 rounded-xl font-semibold">İptal</button>
-                    <button type="submit" className={"flex-1 py-3 text-white rounded-xl font-bold shadow-lg " + (borcModal === 'al' ? 'gradient-red' : 'gradient-green')}>{borcModal === 'al' ? 'Borçlan' : 'Öde'}</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    function RaporView({ kayitlar, giderler }) {
-      const [startDate, setStartDate] = React.useState(new Date().toISOString().split('T')[0]);
-      const [endDate, setEndDate] = React.useState(new Date().toISOString().split('T')[0]);
-      const [filterEgitimTuru, setFilterEgitimTuru] = React.useState('Tümü');
-      const [filterEgitimCesidi, setFilterEgitimCesidi] = React.useState('Tümü');
-      const [filterDonem, setFilterDonem] = React.useState('Tümü');
-      const [filterSinif, setFilterSinif] = React.useState('Tümü');
-
-      const setRange = (months) => {
-        const end = new Date();
-        const start = new Date();
-        start.setMonth(start.getMonth() - months);
-        setEndDate(end.toISOString().split('T')[0]);
-        setStartDate(start.toISOString().split('T')[0]);
-      };
-
-      const setThisYear = () => {
-        const now = new Date();
-        setStartDate(now.getFullYear() + '-01-01');
-        setEndDate(now.getFullYear() + '-12-31');
-      };
-
-      const filteredData = React.useMemo(() => {
-        let filteredKayitlar = kayitlar.filter(k => {
-          if (k.arsivlendi) return false;
-          if (!k.kayitTarihi) return false;
-          if (k.kayitTarihi < startDate || k.kayitTarihi > endDate) return false;
-          if (filterEgitimTuru !== 'Tümü' && k.egitimTuru !== filterEgitimTuru) return false;
-          if (filterEgitimCesidi !== 'Tümü' && k.egitimCesidi !== filterEgitimCesidi) return false;
-          if (filterDonem !== 'Tümü' && k.donem !== filterDonem) return false;
-          if (filterSinif !== 'Tümü' && k.sinif !== filterSinif) return false;
-          return true;
-        });
-
-        const totalReceivable = filteredKayitlar.reduce((sum, k) => sum + (k.toplamUcret || 0), 0);
-        const totalCollected = filteredKayitlar.reduce((sum, k) => sum + (k.odenen || 0), 0);
-
-        const filteredGiderler = giderler.filter(g => g.tarih >= startDate && g.tarih <= endDate);
-        const totalExpense = filteredGiderler.reduce((sum, g) => sum + (g.tutar || 0), 0);
-
-        return { count: filteredKayitlar.length, totalReceivable, totalCollected, totalExpense, net: totalCollected - totalExpense };
-      }, [kayitlar, giderler, startDate, endDate, filterEgitimTuru, filterEgitimCesidi, filterDonem, filterSinif]);
-
-      return (
-        <div className="fade-in space-y-6">
-          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><Icon name="Filter" size={20} /> Rapor Kriterleri</h2>
-
-            <div className="bg-gray-50 p-4 rounded-xl mb-6">
-              <div className="flex flex-wrap gap-2 mb-4">
-                <button onClick={() => setRange(0)} className="px-3 py-1 bg-white border rounded-lg text-sm hover:bg-blue-50 text-gray-600">Bu Ay</button>
-                <button onClick={() => setRange(1)} className="px-3 py-1 bg-white border rounded-lg text-sm hover:bg-blue-50 text-gray-600">Son 1 Ay</button>
-                <button onClick={() => setRange(3)} className="px-3 py-1 bg-white border rounded-lg text-sm hover:bg-blue-50 text-gray-600">Son 3 Ay</button>
-                <button onClick={() => setRange(6)} className="px-3 py-1 bg-white border rounded-lg text-sm hover:bg-blue-50 text-gray-600">Son 6 Ay</button>
-                <button onClick={setThisYear} className="px-3 py-1 bg-white border rounded-lg text-sm hover:bg-blue-50 text-gray-600">Bu Yıl</button>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs font-semibold text-gray-500">Başlangıç</label><DateInput value={startDate} onChange={e => setStartDate(e.target.value)} className="p-2" /></div>
-                <div><label className="text-xs font-semibold text-gray-500">Bitiş</label><DateInput value={endDate} onChange={e => setEndDate(e.target.value)} className="p-2" /></div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div>
-                <label className="text-xs font-semibold text-gray-500 mb-1 block">Eğitim Türü</label>
-                <select className="w-full p-2 border rounded-lg" value={filterEgitimTuru} onChange={e => setFilterEgitimTuru(e.target.value)}>
-                  <option>Tümü</option><option>Temel</option><option>Yenileme</option><option value="Silah Farkı">Silah Farkı</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 mb-1 block">Eğitim Çeşidi</label>
-                <select className="w-full p-2 border rounded-lg" value={filterEgitimCesidi} onChange={e => setFilterEgitimCesidi(e.target.value)}>
-                  <option>Tümü</option><option>Silahlı</option><option>Silahsız</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 mb-1 block">Dönem</label>
-                <select className="w-full p-2 border rounded-lg" value={filterDonem} onChange={e => setFilterDonem(e.target.value)}>
-                  <option>Tümü</option>{[...new Set([...TEMEL_DONEMLER, ...YENILEME_DONEMLER])].sort().map(d => <option key={d}>{d}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 mb-1 block">Sınıf</label>
-                <select className="w-full p-2 border rounded-lg" value={filterSinif} onChange={e => setFilterSinif(e.target.value)}>
-                  <option>Tümü</option>{SINIFLAR.map(s => <option key={s}>{s}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                <p className="text-xs text-gray-500">Kayıt Sayısı</p>
-                <p className="text-2xl font-bold text-gray-800">{filteredData.count}</p>
-              </div>
-              <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                <p className="text-xs text-blue-600">Toplam Alacak</p>
-                <p className="text-xl font-bold text-blue-800">{formatCurrency(filteredData.totalReceivable)}</p>
-              </div>
-              <div className="p-4 bg-green-50 rounded-2xl border border-green-100">
-                <p className="text-xs text-green-600">Tahsil Edilen</p>
-                <p className="text-xl font-bold text-green-800">{formatCurrency(filteredData.totalCollected)}</p>
-              </div>
-              <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
-                <p className="text-xs text-red-600">Giderler</p>
-                <p className="text-xl font-bold text-red-800">{formatCurrency(filteredData.totalExpense)}</p>
-              </div>
-              <div className={"p-4 rounded-2xl border " + (filteredData.net >= 0 ? "bg-emerald-50 border-emerald-100" : "bg-orange-50 border-orange-100")}>
-                <p className={"text-xs " + (filteredData.net >= 0 ? "text-emerald-600" : "text-orange-600")}>Net Kasa</p>
-                <p className={"text-xl font-bold " + (filteredData.net >= 0 ? "text-emerald-800" : "text-orange-800")}>{formatCurrency(filteredData.net)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function App() {
-      const [currentUser, setCurrentUser] = React.useState(null);
-      const [activeTab, setActiveTab] = React.useState('dashboard');
-      const [menuOpen, setMenuOpen] = React.useState(false);
-      const [kayitlar, setKayitlar] = React.useState([]);
-      const [giderler, setGiderler] = React.useState([]);
-      const [searchTerm, setSearchTerm] = React.useState('');
-
-      const [listFilterEgitimTuru, setListFilterEgitimTuru] = React.useState('Tümü');
-      const [listFilterEgitimCesidi, setListFilterEgitimCesidi] = React.useState('Tümü');
-      const [listFilterDonem, setListFilterDonem] = React.useState('Tümü');
-      const [listFilterSinif, setListFilterSinif] = React.useState('Tümü');
-
-      const [viewMode, setViewMode] = React.useState('card');
-      const [editModal, setEditModal] = React.useState({ open: false, item: null, mode: null });
-      const [tahsilatModal, setTahsilatModal] = React.useState(null);
-      const [giderModal, setGiderModal] = React.useState(false);
-      const [users, setUsers] = React.useState({});
-      const [activityLogs, setActivityLogs] = React.useState([]);
-      const [kasaBorc, setKasaBorc] = React.useState(0);
-
-      const TUM_DONEMLER = [...new Set([...TEMEL_DONEMLER, ...YENILEME_DONEMLER])].sort((a, b) => parseInt(a.match(/\d+/)[0]) - parseInt(b.match(/\d+/)[0]));
-
-      React.useEffect(() => {
-        const initApp = async () => {
-          await UserManager.init(); // Hash'li kullanıcıları oluştur
-          const user = Auth.getCurrentUser();
-          if (user) {
-            setCurrentUser(user);
-            DB.migrate().then(data => {
-              setKayitlar(data.kayitlar);
-              setGiderler(data.giderler);
-              setUsers(UserManager.getUsers());
-              setActivityLogs(ActivityLog.getLogs());
-              setKasaBorc(data.kasa_borc || 0);
-            });
-          }
-        };
-        initApp();
-      }, []);
-
-
-
-      React.useEffect(() => { if (currentUser && currentUser.role === 'sekreter') setActiveTab('yeni_kayit'); else if (currentUser && currentUser.role === 'admin') setActiveTab('dashboard'); }, [currentUser]);
-
-      const handleLogin = async (user) => {
-        await UserManager.init();
-        setCurrentUser(user);
-        setUsers(UserManager.getUsers());
-        DB.migrate().then(data => { setKayitlar(data.kayitlar); setGiderler(data.giderler); setKasaBorc(data.kasa_borc || 0); });
-      };
-      const handleLogout = () => { Auth.logout(); setCurrentUser(null); setKayitlar([]); setGiderler([]); };
-
-      const MENU = currentUser ? [
-        { id: 'dashboard', label: 'Ana Sayfa', icon: 'LayoutDashboard', roles: ['admin'] },
-        { id: 'yeni_kayit', label: 'Yeni Kayıt', icon: 'UserPlus', roles: ['admin', 'sekreter'] },
-        { id: 'kursiyer', label: 'Kursiyerler', icon: 'Users', roles: ['admin', 'sekreter'] },
-        { id: 'muhasebe', label: 'Muhasebe', icon: 'Receipt', roles: ['admin'] },
-        { id: 'kasa', label: 'Kasa', icon: 'Landmark', roles: ['admin'] },
-        { id: 'raporlar', label: 'Raporlar', icon: 'BarChart3', roles: ['admin'] },
-        { id: 'giderler', label: 'Giderler', icon: 'TrendingDown', roles: ['admin'] },
-        { id: 'arsiv', label: 'Arşiv', icon: 'Archive', roles: ['admin'] },
-        { id: 'yonetim', label: 'Yönetim Paneli', icon: 'Settings', roles: ['admin'] },
-      ].filter(item => item.roles.includes(currentUser.role)) : [];
-
-      if (!currentUser) return <LoginScreen onLogin={handleLogin} />;
-
-      const handleSave = async (form) => { const isNew = !form.id; const yeni = form.id ? kayitlar.map(k => k.id === form.id ? form : k) : [...kayitlar, { ...form, id: Date.now() }]; setKayitlar(yeni); DB.set('kayitlar', yeni); setEditModal({ open: false, item: null, mode: null }); ActivityLog.log(currentUser.username, isNew ? 'YENİ KAYIT' : 'KAYIT GÜNCELLEME', form.adSoyad + ' - ' + form.donem); };
-      const handleTahsilat = (id, tutar, makbuz, odemeTarihi) => {
-        const ogrenci = kayitlar.find(k => k.id === id);
-        const yeni = kayitlar.map(k => k.id === id ? {
-          ...k,
-          odenen: (k.odenen || 0) + tutar,
-          makbuzNo: makbuz,
-          // 2. ödeme bilgilerini ayrı alanlara kaydet
-          odenenTutar2: tutar,
-          odemeTarihi2: odemeTarihi
-        } : k);
-        setKayitlar(yeni);
-        DB.set('kayitlar', yeni);
-        setTahsilatModal(null);
-        ActivityLog.log(currentUser.username, 'TAHSİLAT', ogrenci?.adSoyad + ' - ' + formatCurrency(tutar));
-      };
-      const saveGider = (form) => { if (!form.tutar || !form.aciklama) return; const yeni = [...giderler, { ...form, id: Date.now(), tutar: parseFloat(form.tutar) }]; setGiderler(yeni); DB.set('giderler', yeni); setGiderModal(false); ActivityLog.log(currentUser.username, 'GİDER EKLEME', form.kategori + ' - ' + formatCurrency(form.tutar)); };
-      const deleteGider = (id) => { if (!confirm('Bu gideri silmek istediğinize emin misiniz?')) return; const gider = giderler.find(g => g.id === id); const yeni = giderler.filter(g => g.id !== id); setGiderler(yeni); DB.set('giderler', yeni); ActivityLog.log(currentUser.username, 'GİDER SİLME', gider?.kategori + ' - ' + formatCurrency(gider?.tutar)); };
-
-      const handleArchive = (id) => {
-        if (!confirm('Bu kaydı arşive göndermek (silmek) istediğinize emin misiniz?')) return;
-        const item = kayitlar.find(k => k.id === id);
-        const yeni = kayitlar.map(k => k.id === id ? { ...k, arsivlendi: true } : k);
-        setKayitlar(yeni);
-        DB.set('kayitlar', yeni);
-        ActivityLog.log(currentUser.username, 'KAYIT ARŞİVLEME', item?.adSoyad);
-      };
-
-      const handleKasaBorcChange = (val, date) => {
-        setKasaBorc(val);
-        DB.set('kasa_borc', val, date);
-        ActivityLog.log(currentUser.username, 'BORÇ GÜNCELLEME', 'Yeni Bakiye: ' + formatCurrency(val));
-      };
-
-      const filteredKayitlar = kayitlar.filter(k => {
-        if (k.arsivlendi) return false;
-        const matchSearch = !searchTerm ||
-          k.adSoyad?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          String(k.tcKimlik || '').includes(searchTerm) ||
-          String(k.telefon || '').includes(searchTerm);
-        const matchDonem = listFilterDonem === 'Tümü' || k.donem === listFilterDonem;
-        const matchEgitimTuru = listFilterEgitimTuru === 'Tümü' || k.egitimTuru === listFilterEgitimTuru;
-        const matchEgitimCesidi = listFilterEgitimCesidi === 'Tümü' || k.egitimCesidi === listFilterEgitimCesidi;
-        const matchSinif = listFilterSinif === 'Tümü' || k.sinif === listFilterSinif;
-        return matchSearch && matchDonem && matchEgitimTuru && matchEgitimCesidi && matchSinif;
-      });
-
-
-      const clearFilters = () => {
-        setSearchTerm('');
-        setListFilterEgitimTuru('Tümü');
-        setListFilterEgitimCesidi('Tümü');
-        setListFilterDonem('Tümü');
-        setListFilterSinif('Tümü');
-      };
-
-      const hasActiveFilters = searchTerm || listFilterEgitimTuru !== 'Tümü' || listFilterEgitimCesidi !== 'Tümü' || listFilterDonem !== 'Tümü' || listFilterSinif !== 'Tümü';
-
-      const stats = { toplamOgrenci: kayitlar.filter(k => !k.arsivlendi).length, toplamGelir: kayitlar.filter(k => !k.arsivlendi).reduce((sum, k) => sum + (k.odenen || 0), 0), bekleyenTahsilat: kayitlar.filter(k => !k.arsivlendi).reduce((sum, k) => sum + ((k.toplamUcret || 0) - (k.odenen || 0)), 0), toplamGider: giderler.reduce((sum, g) => sum + (g.tutar || 0), 0) };
-
-      const FilterBar = ({ showExcel = true, excelFn = null }) => (
-        <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-          {/* Üst Satır - Arama ve Temizle */}
-          <div className="flex gap-3 mb-4">
-            <div className="flex-1 relative">
-              <Icon name="Search" size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                className="w-full pl-12 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition text-base"
-                placeholder="Ad Soyad, TC Kimlik veya Telefon ile ara..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full">
-                  <Icon name="X" size={18} className="text-gray-400" />
-                </button>
-              )}
-            </div>
-            {hasActiveFilters && (
-              <button onClick={clearFilters} className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl font-semibold flex items-center gap-2 transition whitespace-nowrap">
-                <Icon name="FilterX" size={18} />Temizle
-              </button>
-            )}
-          </div>
-
-          {/* Alt Satır - Filtreler ve Butonlar */}
-          <div className="flex flex-col md:flex-row gap-3 items-end">
-            <div className="flex flex-wrap gap-3 flex-1">
-              <div className="flex flex-col min-w-[120px]">
-                <label className="text-xs font-semibold text-gray-500 mb-1">Eğitim Türü</label>
-                <select className="px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none bg-white text-sm font-medium" value={listFilterEgitimTuru} onChange={e => setListFilterEgitimTuru(e.target.value)}>
-                  <option>Tümü</option><option>Temel</option><option>Yenileme</option><option value="Silah Farkı">Silah Farkı</option>
-                </select>
-              </div>
-              <div className="flex flex-col min-w-[120px]">
-                <label className="text-xs font-semibold text-gray-500 mb-1">Eğitim Çeşidi</label>
-                <select className="px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none bg-white text-sm font-medium" value={listFilterEgitimCesidi} onChange={e => setListFilterEgitimCesidi(e.target.value)}>
-                  <option>Tümü</option><option>Silahlı</option><option>Silahsız</option>
-                </select>
-              </div>
-              <div className="flex flex-col min-w-[130px]">
-                <label className="text-xs font-semibold text-gray-500 mb-1">Dönem</label>
-                <select className="px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none bg-white text-sm font-medium" value={listFilterDonem} onChange={e => setListFilterDonem(e.target.value)}>
-                  <option>Tümü</option>{TUM_DONEMLER.map(d => <option key={d}>{d}</option>)}
-                </select>
-              </div>
-              <div className="flex flex-col min-w-[80px]">
-                <label className="text-xs font-semibold text-gray-500 mb-1">Sınıf</label>
-                <select className="px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none bg-white text-sm font-medium" value={listFilterSinif} onChange={e => setListFilterSinif(e.target.value)}>
-                  <option>Tümü</option>{SINIFLAR.map(s => <option key={s}>{s}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="flex bg-gray-100 p-1 rounded-xl">
-                <button onClick={() => setViewMode('card')} className={"p-2.5 rounded-lg transition " + (viewMode === 'card' ? 'bg-white shadow text-green-600' : 'text-gray-500 hover:text-gray-700')} title="Kart Görünümü">
-                  <Icon name="LayoutGrid" size={20} />
-                </button>
-                <button onClick={() => setViewMode('table')} className={"p-2.5 rounded-lg transition " + (viewMode === 'table' ? 'bg-white shadow text-green-600' : 'text-gray-500 hover:text-gray-700')} title="Tablo Görünümü">
-                  <Icon name="Table" size={20} />
-                </button>
-              </div>
-              {showExcel && (
-                <button onClick={excelFn || (() => exportToExcel(filteredKayitlar, activeTab, [{ key: 'adSoyad', label: 'Ad Soyad' }, { key: 'tcKimlik', label: 'TC Kimlik' }, { key: 'telefon', label: 'Telefon' }, { key: 'donem', label: 'Dönem' }, { key: 'sinif', label: 'Sınıf' }, { key: 'egitimCesidi', label: 'Eğitim Çeşidi' }, { key: 'egitimTuru', label: 'Eğitim Türü' }]))} className="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold flex items-center gap-2 transition">
-                  <Icon name="Download" size={18} />Excel
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      );
-
-      return (
-        <div className="min-h-screen pb-20 md:pb-0">
-          <header className="glass sticky top-0 z-30 shadow-sm"><div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between"><button onClick={() => setMenuOpen(true)} className="md:hidden p-2 hover:bg-gray-100 rounded-xl transition"><Icon name="Menu" size={24} /></button><h1 className="text-xl font-bold text-gray-800 hidden md:block"><span className="text-green-600">Yeşil</span> Güvenlik</h1><div className="flex items-center gap-4"><div className="text-right"><p className="font-semibold text-gray-800">{currentUser.name}</p><p className="text-xs text-gray-500">{currentUser.role === 'admin' ? 'Yönetici' : 'Sekreter'}</p></div><button onClick={handleLogout} className="p-2 hover:bg-red-50 text-red-600 rounded-xl transition" title="Çıkış Yap"><Icon name="LogOut" size={20} /></button></div></div></header>
-
-          {menuOpen && <div className="fixed inset-0 z-50"><div className="absolute inset-0 bg-black/50" onClick={() => setMenuOpen(false)}></div><div className="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-2xl slide-in"><div className="gradient-green p-6 text-white"><h2 className="text-xl font-bold">Yeşil Güvenlik</h2><p className="text-green-100 text-sm mt-1">Yönetim Paneli</p></div><nav className="p-4 space-y-2">{MENU.map(item => (<button key={item.id} onClick={() => { setActiveTab(item.id); setMenuOpen(false); }} className={'w-full flex items-center gap-3 p-4 rounded-xl transition ' + (activeTab === item.id ? 'bg-green-50 text-green-700 font-semibold' : 'hover:bg-gray-50 text-gray-700')}><Icon name={item.icon} size={20} />{item.label}</button>))}</nav></div></div>}
-
-          <div className="max-w-7xl mx-auto flex">
-            <aside className="hidden md:block w-64 p-4 sticky top-16 h-[calc(100vh-4rem)]"><nav className="bg-white rounded-2xl shadow-md p-4 space-y-2">{MENU.map(item => (<button key={item.id} onClick={() => setActiveTab(item.id)} className={'w-full flex items-center gap-3 p-3 rounded-xl transition ' + (activeTab === item.id ? 'gradient-green text-white font-semibold shadow-lg' : 'hover:bg-gray-100 text-gray-700')}><Icon name={item.icon} size={20} />{item.label}</button>))}</nav></aside>
-
-            <main className="flex-1 p-4">
-              {activeTab === 'dashboard' && currentUser.role === 'admin' && (
-                <div className="fade-in">
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="stat-card gradient-green text-white rounded-2xl p-5 shadow-lg"><Icon name="Users" size={28} className="mb-2 opacity-80" /><p className="text-3xl font-bold">{stats.toplamOgrenci}</p><p className="text-sm text-green-100">Toplam Kursiyer</p></div>
-                    <div className="stat-card gradient-blue text-white rounded-2xl p-5 shadow-lg"><Icon name="TrendingUp" size={28} className="mb-2 opacity-80" /><p className="text-2xl font-bold">{formatCurrency(stats.toplamGelir)}</p><p className="text-sm text-blue-100">Toplam Gelir</p></div>
-                    <div className="stat-card gradient-amber text-white rounded-2xl p-5 shadow-lg"><Icon name="Clock" size={28} className="mb-2 opacity-80" /><p className="text-2xl font-bold">{formatCurrency(stats.bekleyenTahsilat)}</p><p className="text-sm text-amber-100">Bekleyen</p></div>
-                    <div className="stat-card gradient-red text-white rounded-2xl p-5 shadow-lg"><Icon name="TrendingDown" size={28} className="mb-2 opacity-80" /><p className="text-2xl font-bold">{formatCurrency(stats.toplamGider)}</p><p className="text-sm text-red-100">Toplam Gider</p></div>
-                  </div>
-                  <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6"><h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><Icon name="Zap" size={24} className="text-amber-500" />Hızlı İşlemler</h2><div className="grid grid-cols-2 md:grid-cols-4 gap-4"><button onClick={() => setActiveTab('yeni_kayit')} className="p-4 bg-green-50 hover:bg-green-100 rounded-xl text-center transition group"><Icon name="UserPlus" size={32} className="text-green-600 mx-auto mb-2 group-hover:scale-110 transition" /><p className="font-semibold text-sm text-gray-700">Yeni Kayıt</p></button><button onClick={() => setActiveTab('muhasebe')} className="p-4 bg-blue-50 hover:bg-blue-100 rounded-xl text-center transition group"><Icon name="Wallet" size={32} className="text-blue-600 mx-auto mb-2 group-hover:scale-110 transition" /><p className="font-semibold text-sm text-gray-700">Tahsilat</p></button><button onClick={() => setGiderModal(true)} className="p-4 bg-red-50 hover:bg-red-100 rounded-xl text-center transition group"><Icon name="TrendingDown" size={32} className="text-red-600 mx-auto mb-2 group-hover:scale-110 transition" /><p className="font-semibold text-sm text-gray-700">Gider Ekle</p></button><button onClick={() => setActiveTab('kursiyer')} className="p-4 bg-purple-50 hover:bg-purple-100 rounded-xl text-center transition group"><Icon name="Users" size={32} className="text-purple-600 mx-auto mb-2 group-hover:scale-110 transition" /><p className="font-semibold text-sm text-gray-700">Kursiyerler</p></button></div></div>
-                </div>
-              )}
-
-              {activeTab === 'yeni_kayit' && <div className="fade-in pb-10"><div className="max-w-5xl mx-auto mb-6"><h2 className="text-3xl font-bold text-gray-800 mb-2">Yeni Kursiyer Kaydı</h2><p className="text-gray-500">Kursiyer kimlik ve muhasebe bilgilerini eksiksiz giriniz.</p></div><KayitForm viewMode="new" editItem={null} onSave={handleSave} /></div>}
-
-              {activeTab === 'kursiyer' && (
-                <div className="fade-in">
-                  <div className="flex justify-between items-center mb-4"><h2 className="text-xl font-bold text-gray-800">Kursiyer Listesi</h2><p className="text-sm text-gray-500">{filteredKayitlar.length} kayıt bulundu</p></div>
-                  {FilterBar({})}
-                  {viewMode === 'card' ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">{filteredKayitlar.map(k => <OgrenciCard key={k.id} item={k} onEdit={(item) => setEditModal({ open: true, item, mode: 'personal' })} onDelete={handleArchive} />)}</div>
-                  ) : (
-                    <div className="bg-white rounded-2xl shadow border border-gray-100 overflow-x-auto">
-                      <table className="custom-table">
-                        <thead><tr><th>Ad Soyad</th><th>TC Kimlik</th><th>Telefon</th><th>Eğitim Türü</th><th>Eğitim Çeşidi</th><th>Dönem</th><th>Sınıf</th><th>İşlemler</th></tr></thead>
-                        <tbody>
-                          {filteredKayitlar.map(k => (
-                            <tr key={k.id}>
-                              <td className="font-semibold text-gray-900">{k.adSoyad}</td>
-                              <td>{k.tcKimlik}</td>
-                              <td>{formatPhoneDisplay(k.telefon)}</td>
-                              <td><span className="badge badge-info">{k.egitimTuru}</span></td>
-                              <td><span className="badge badge-success">{k.egitimCesidi}</span></td>
-                              <td><span className="badge badge-warning">{k.donem}</span></td>
-                              <td>{k.sinif || '-'}</td>
-                              <td className="flex gap-2">
-                                <button onClick={() => setEditModal({ open: true, item: k, mode: 'personal' })} className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg"><Icon name="Edit2" size={16} /></button>
-                                <button onClick={() => handleArchive(k.id)} className="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg"><Icon name="Trash2" size={16} /></button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                  {filteredKayitlar.length === 0 && <div className="text-center py-16"><Icon name="Search" size={64} className="text-gray-300 mx-auto mb-4" /><p className="text-gray-400 font-semibold">Kursiyer bulunamadı</p></div>}
-                </div>
-              )}
-
-              {activeTab === 'muhasebe' && currentUser.role === 'admin' && (
-                <div className="fade-in">
-                  <div className="flex justify-between items-center mb-4"><div><h2 className="text-xl font-bold text-gray-800">Muhasebe Kayıtları</h2><p className="text-sm text-gray-500">{filteredKayitlar.length} kayıt bulundu</p></div></div>
-                  {FilterBar({ showExcel: true, excelFn: () => exportMuhasebeToExcel(filteredKayitlar) })}
-                  {viewMode === 'card' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">{filteredKayitlar.map(k => <MuhasebeCard key={k.id} item={k} onEdit={(item) => setEditModal({ open: true, item, mode: 'financial' })} onTahsilat={(item) => setTahsilatModal(item)} onDelete={handleArchive} />)}</div>
-                  ) : (
-                    <div className="bg-white rounded-2xl shadow border border-gray-100 overflow-x-auto">
-                      <table className="custom-table">
-                        <thead><tr><th>Ad Soyad</th><th>Dönem</th><th>Toplam Ücret</th><th>Ödenen</th><th>Kalan</th><th>Durum</th><th>İşlemler</th></tr></thead>
-                        <tbody>
-                          {filteredKayitlar.map(k => {
-                            const kalan = (k.toplamUcret || 0) - (k.odenen || 0);
-                            return (
-                              <tr key={k.id}>
-                                <td className="font-semibold text-gray-900">{k.adSoyad}</td>
-                                <td>{k.donem}</td>
-                                <td className="font-bold">{formatCurrency(k.toplamUcret)}</td>
-                                <td className="text-green-600">{formatCurrency(k.odenen)}</td>
-                                <td className={kalan > 0 ? "text-red-600 font-bold" : "text-gray-400"}>{formatCurrency(kalan)}</td>
-                                <td><StatusBadge odenen={k.odenen} toplam={k.toplamUcret} /></td>
-                                <td className="flex gap-2">
-                                  {kalan > 0 && <button onClick={() => setTahsilatModal(k)} title="Tahsilat" className="p-1.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg"><Icon name="Wallet" size={16} /></button>}
-                                  <button onClick={() => setEditModal({ open: true, item: k, mode: 'financial' })} title="Düzenle" className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg"><Icon name="Edit2" size={16} /></button>
-                                  <button onClick={() => handleArchive(k.id)} title="Sil" className="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg"><Icon name="Trash2" size={16} /></button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === 'kasa' && currentUser.role === 'admin' && <KasaView kayitlar={kayitlar} giderler={giderler} onBorcChange={handleKasaBorcChange} />}
-
-              {activeTab === 'raporlar' && currentUser.role === 'admin' && <RaporView kayitlar={kayitlar} giderler={giderler} />}
-
-              {activeTab === 'giderler' && currentUser.role === 'admin' && (
-                <div className="fade-in">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"><div><h2 className="text-2xl font-bold text-gray-800">Gider Yönetimi</h2><p className="text-gray-500 text-sm mt-1">Toplam {giderler.length} gider kaydı</p></div><div className="flex gap-3"><button onClick={() => exportToExcel(giderler, 'giderler', [{ key: 'kategori', label: 'Kategori' }, { key: 'aciklama', label: 'Açıklama' }, { key: 'tutar', label: 'Tutar', format: (r) => formatCurrency(r.tutar) }, { key: 'tarih', label: 'Tarih', format: (r) => formatDate(r.tarih) }])} className="px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold flex items-center gap-2 transition"><Icon name="Download" size={18} />Excel</button><button onClick={() => setGiderModal(true)} className="gradient-red text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:shadow-xl transition"><Icon name="Plus" size={20} />Gider Ekle</button></div></div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">{GIDER_KATEGORILERI.map(kategori => { const toplamTutar = giderler.filter(g => g.kategori === kategori).reduce((sum, g) => sum + (g.tutar || 0), 0); const adet = giderler.filter(g => g.kategori === kategori).length; return (<div key={kategori} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 card-hover"><p className="text-xs text-gray-500 mb-2">{kategori}</p><p className="text-2xl font-bold text-red-600">{formatCurrency(toplamTutar)}</p><p className="text-xs text-gray-400 mt-1">{adet} işlem</p></div>); })}</div>
-                  <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden"><div className="divide-y">{giderler.sort((a, b) => new Date(b.tarih) - new Date(a.tarih)).map(g => (<div key={g.id} className="p-5 flex items-center justify-between hover:bg-red-50/30 transition group"><div className="flex items-center gap-4 flex-1"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><Icon name="TrendingDown" size={24} className="text-red-600" /></div><div className="flex-1"><div className="flex items-center gap-3 mb-1"><span className="badge badge-danger">{g.kategori}</span><p className="text-xs text-gray-400 flex items-center gap-1"><Icon name="Calendar" size={12} />{formatDate(g.tarih)}</p></div><p className="font-semibold text-gray-900">{g.aciklama}</p></div></div><div className="flex items-center gap-4"><p className="font-bold text-red-600 text-2xl">-{formatCurrency(g.tutar)}</p><button onClick={() => deleteGider(g.id)} className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-100 rounded-xl transition opacity-0 group-hover:opacity-100"><Icon name="Trash2" size={18} /></button></div></div>))}</div>{giderler.length === 0 && <div className="text-center py-20"><Icon name="TrendingDown" size={48} className="text-gray-300 mx-auto mb-4" /><p className="text-gray-400 font-semibold">Henüz gider eklenmedi</p></div>}</div>
-                </div>
-              )}
-
-              {activeTab === 'arsiv' && (
-                <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 fade-in"><h2 className="font-bold text-xl mb-4 text-gray-800">Arşivlenmiş Kayıtlar</h2><div className="space-y-2">{kayitlar.filter(k => k.arsivlendi).map(k => (<div key={k.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition"><div><p className="font-semibold text-gray-900">{k.adSoyad}</p><p className="text-sm text-gray-500">{k.donem} - {k.egitimCesidi}</p></div><button onClick={() => { const yeni = kayitlar.map(x => x.id === k.id ? { ...x, arsivlendi: false } : x); setKayitlar(yeni); DB.set('kayitlar', yeni); }} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition">Geri Al</button></div>))}</div>{kayitlar.filter(k => k.arsivlendi).length === 0 && <div className="text-center py-16"><Icon name="Archive" size={64} className="text-gray-300 mx-auto mb-4" /><p className="text-gray-400 font-semibold">Arşiv boş</p></div>}</div>
-              )}
-
-              {activeTab === 'yonetim' && currentUser.role === 'admin' && (
-                <div className="fade-in space-y-6">
-                  <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6"><div className="flex justify-between items-center mb-6"><div><h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2"><Icon name="Users" size={28} className="text-purple-600" />Kullanıcı Yönetimi</h2><p className="text-gray-500 text-sm mt-1">{Object.keys(users).length} aktif kullanıcı</p></div><button onClick={async () => { const username = prompt('Kullanıcı adı:'); if (!username) return; const { user: existingUser } = await UserManager.findUser(username); if (existingUser) { alert('Bu kullanıcı adı zaten mevcut!'); return; } const password = prompt('Şifre:'); if (!password) return; const name = prompt('Ad Soyad:'); if (!name) return; const role = confirm('Admin yetkisi verilsin mi?\n\nEVET: Admin\nHAYIR: Sekreter') ? 'admin' : 'sekreter'; await UserManager.addUser(username, password, role, name); setUsers(UserManager.getUsers()); ActivityLog.log(currentUser.username, 'KULLANICI EKLEME', name + ' - ' + role); setActivityLogs(ActivityLog.getLogs()); alert('✅ Kullanıcı başarıyla eklendi!'); }} className="gradient-green text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:shadow-xl transition"><Icon name="UserPlus" size={20} />Kullanıcı Ekle</button></div><div className="grid gap-4">{Object.entries(users).map(([userHash, user]) => (<div key={userHash} className="flex items-center justify-between p-5 bg-gradient-to-r from-purple-50 to-white rounded-2xl border border-purple-100 hover:shadow-md transition"><div className="flex items-center gap-4"><div className={'w-14 h-14 rounded-full flex items-center justify-center ' + (user.role === 'admin' ? 'bg-purple-600' : 'bg-blue-600')}><Icon name={user.role === 'admin' ? 'Shield' : 'User'} size={28} className="text-white" /></div><div><h3 className="font-bold text-lg text-gray-900">{user.name}</h3><p className="text-sm text-gray-600">{user.role === 'admin' ? '👑 Yönetici' : '📋 Sekreter'}</p><div className="flex items-center gap-2 mt-1"><span className={'badge ' + (user.role === 'admin' ? 'badge-danger' : 'badge-info')}>{user.role === 'admin' ? 'Yönetici' : 'Sekreter'}</span><span className={'badge ' + (user.active ? 'badge-success' : 'badge-warning')}>{user.active ? 'Aktif' : 'Pasif'}</span></div></div></div><div className="flex gap-2"><button onClick={async () => { const newPassword = prompt(user.name + ' için yeni şifre:'); if (newPassword) { await UserManager.updateUser(userHash, { password: newPassword }); setUsers(UserManager.getUsers()); ActivityLog.log(currentUser.username, 'ŞİFRE SIFIRLAMA', user.name); setActivityLogs(ActivityLog.getLogs()); alert('✅ Şifre başarıyla değiştirildi!'); } }} className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg font-semibold transition flex items-center gap-2"><Icon name="Key" size={16} />Şifre</button><button onClick={async () => { await UserManager.updateUser(userHash, { active: !user.active }); setUsers(UserManager.getUsers()); ActivityLog.log(currentUser.username, user.active ? 'KULLANICI DEVRE DIŞI' : 'KULLANICI AKTİF', user.name); setActivityLogs(ActivityLog.getLogs()); }} className={'px-4 py-2 rounded-lg font-semibold transition ' + (user.active ? 'bg-amber-50 hover:bg-amber-100 text-amber-600' : 'bg-green-50 hover:bg-green-100 text-green-600')}><Icon name={user.active ? 'UserX' : 'UserCheck'} size={16} /></button>{userHash !== currentUser.userHash && <button onClick={() => { if (confirm(user.name + ' kullanıcısını silmek istediğinize emin misiniz?')) { UserManager.deleteUser(userHash); setUsers(UserManager.getUsers()); ActivityLog.log(currentUser.username, 'KULLANICI SİLME', user.name); setActivityLogs(ActivityLog.getLogs()); } }} className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition"><Icon name="Trash2" size={16} /></button>}</div></div>))}</div></div>
-                  <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6"><div className="flex justify-between items-center mb-6"><div><h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2"><Icon name="Activity" size={28} className="text-blue-600" />Aktivite Logları</h2><p className="text-gray-500 text-sm mt-1">Son {activityLogs.length} işlem</p></div><div className="flex gap-2"><button onClick={() => setActivityLogs(ActivityLog.getLogs())} className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg font-semibold transition"><Icon name="RefreshCw" size={18} className="inline mr-2" />Yenile</button><button onClick={() => { if (confirm('Tüm logları silmek istediğinize emin misiniz?')) { ActivityLog.clearLogs(); setActivityLogs([]); alert('✅ Loglar temizlendi!'); } }} className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg font-semibold transition"><Icon name="Trash2" size={18} className="inline mr-2" />Temizle</button></div></div><div className="space-y-2 max-h-[600px] overflow-y-auto">{activityLogs.map(log => (<div key={log.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition"><div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0"><Icon name="Activity" size={20} className="text-blue-600" /></div><div className="flex-1 min-w-0"><div className="flex items-center gap-2 mb-1"><span className="font-bold text-gray-900">{log.username}</span><span className="badge badge-info">{log.action}</span></div>{log.details && <p className="text-sm text-gray-600 truncate">{log.details}</p>}<p className="text-xs text-gray-400 mt-1">{new Date(log.timestamp).toLocaleString('tr-TR')}</p></div></div>))}{activityLogs.length === 0 && <div className="text-center py-16"><Icon name="Activity" size={64} className="text-gray-300 mx-auto mb-4" /><p className="text-gray-400 font-semibold">Henüz aktivite kaydı yok</p></div>}</div></div>
-                </div>
-              )}
-            </main>
-          </div>
-
-          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-30"><div className="flex justify-around py-2">{MENU.slice(0, 5).map(item => (<button key={item.id} onClick={() => setActiveTab(item.id)} className={'flex flex-col items-center p-2 rounded-xl transition ' + (activeTab === item.id ? 'text-green-600' : 'text-gray-500')}><Icon name={item.icon} size={20} /><span className="text-xs mt-1 font-medium">{item.label.split(' ')[0]}</span></button>))}</div></nav>
-
-          {editModal.open && <KayitForm viewMode={editModal.mode} editItem={editModal.item} onClose={() => setEditModal({ open: false, item: null, mode: null })} onSave={handleSave} />}
-          {tahsilatModal && <TahsilatModal student={tahsilatModal} onClose={() => setTahsilatModal(null)} onConfirm={handleTahsilat} />}
-          {giderModal && <GiderModal onClose={() => setGiderModal(false)} onSave={saveGider} />}
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
 </body>
-
 </html>
